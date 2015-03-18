@@ -1,0 +1,1 @@
+SELECT url FROM moz_places WHERE url LIKE '%.bandcamp.com/album/%' OR '%.bandcamp.com/track/%' INTERSECT SELECT url FROM moz_places WHERE url NOT LIKE '%?%' INTERSECT SELECT url FROM moz_places WHERE url NOT LIKE '%#%'

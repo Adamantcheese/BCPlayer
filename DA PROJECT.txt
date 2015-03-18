@@ -1,0 +1,15 @@
+javafx audioclip
+http://zenjava.com/javafx/maven/
+jsoup
+sqlite csv database
+
+ALGORITHM FOR PLAYING A RANDOM SONG:
+take csv and make string array
+grab a random item from the array
+use jsoup to grab the page
+grab all the stuff tagged as "mp3-128"
+grab a random one from that set of mp3's
+play that mp3
+
+include start/pause/play buttons
+include a skip button
