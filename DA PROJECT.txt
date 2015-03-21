@@ -1,6 +1,6 @@
-javafx media/mediaplayer
-jsoup
-sqlite csv database
+x javafx media/mediaplayer
+x jsoup
+x sqlite csv database
 
 ALGORITHM FOR PLAYING A RANDOM SONG:
 take csv and make string array
@@ -18,8 +18,8 @@ also keep track of first time boot or not
 
 CATCH (BE VERBOSE)
 -----------------------
-404 exception - skip that when adding to the album list
-no songs on the album page - skip that when adding to the album list
+x 404 exception - skip that when trying to get songs
+x no songs on the album page - skip that when trying to get songs
 
 WARN
 -----------------------

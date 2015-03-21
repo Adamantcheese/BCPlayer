@@ -1,35 +1,38 @@
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
+import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
 
 public class Main extends Application {
 
-    public static final String BASE_DIR = System.getProperty("java.io.tmpdir") + "/BCPlayer/";
+    public static final String BASE_DIR = System.getProperty("java.io.tmpdir") + "BCPlayer/";
     public static final int SONG_BUFFER_SIZE = 5;
     public static SongUtil songHelper;
     public static File[] songFiles;
-    public static int lastIndex;
+    public static int lastMP3PlayedIndex;
 
     @Override
     public void start (Stage primaryStage) throws Exception {
         //Display the window with UI
-        Parent root = FXMLLoader.load(Class.forName("Main").getClassLoader().getResource("ui.fxml"));
+        Parent root = null;
+        root = FXMLLoader.load(Class.forName("Main").getClassLoader().getResource("ui.fxml"));
         primaryStage.setTitle("Bandcamp Player");
         primaryStage.setScene(new Scene(root, 300, 275));
         primaryStage.show();
 
         //Start playing the first song
-        MediaPlayer player = new MediaPlayer(songHelper.getMediaFromFile(songFiles[lastIndex]));
+        File mp3File = songFiles[lastMP3PlayedIndex];
+        Media song = songHelper.getMediaFromFile(mp3File);
+        MediaPlayer player = new MediaPlayer(song);
         player.play();
     }
 
@@ -38,6 +41,7 @@ public class Main extends Application {
         File baseDir = new File(BASE_DIR);
         if (!baseDir.exists()) {
             baseDir.mkdirs();
+            System.out.println("Made temporary directory: " + BASE_DIR.replace('\\', '/'));
         }
 
         //Init the song helper
@@ -46,41 +50,89 @@ public class Main extends Application {
         //Allocate space for the song files
         songFiles = new File[SONG_BUFFER_SIZE + 1];
 
+        //Load where we left off last
+        File tempFile = new File(BASE_DIR + "last.tmp");
+        if(tempFile.exists()) {
+            Scanner last = new Scanner(tempFile);
+            lastMP3PlayedIndex = last.nextInt();
+            last.close();
+        } else {
+            lastMP3PlayedIndex = 0;
+            tempFile.createNewFile();
+            PrintWriter printWriter = new PrintWriter(tempFile);
+            printWriter.write(Integer.toString(lastMP3PlayedIndex));
+            printWriter.close();
+            System.out.println("Made location store: " + BASE_DIR.replace('\\', '/') + "last.tmp");
+        }
+
         //Load up 5 random songs and make a blank one for the sixth
         //Only for initial startup
         for (int i = 0; i <= SONG_BUFFER_SIZE; i++){
-            File tempFile = new File(BASE_DIR + "temp" + i + ".mp3");
-            if (!tempFile.exists()) {
-                tempFile.createNewFile();
+            //Setup the file
+            File tempMP3File = new File(BASE_DIR + "temp" + i + ".mp3");
+            if (!tempMP3File.exists()) {
+                tempMP3File.createNewFile();
             } else {
-                songFiles[i] = tempFile;
+                songFiles[i] = tempMP3File;
                 continue;
             }
             if(i == SONG_BUFFER_SIZE) {
                 continue;
             }
-            String albumURL = songHelper.getRandomAlbum();
-            String songURL = songHelper.getRandomSongFromURL(albumURL);
-            FileUtils.copyURLToFile(new URL(songURL), tempFile);
-        }
 
-        //Load where we left off last
-        File lastIndexFile = new File(BASE_DIR + "last.tmp");
-        if(lastIndexFile.exists()) {
-            Scanner last = new Scanner(lastIndexFile);
-            lastIndex = last.nextInt();
-            last.close();
-        } else {
-            lastIndex = 0;
-            lastIndexFile.createNewFile();
+            //Get a song that is under the given filesize (10MB)
+            int filesize = -1;
+            String songURL = null;
+            URL songURLObj = null;
+            do {
+                //Get the song, avoiding pages with no songs/404 errors
+                do {
+                    String albumURL = songHelper.getRandomAlbum();
+                    songURL = songHelper.getRandomSongFromURL(albumURL);
+                } while (songURL == null);
+
+                //Check the filesize, make sure it is smaller than 10MB
+                songURLObj = new URL(songURL);
+                HttpURLConnection filesizeCheck = null;
+                try {
+                    filesizeCheck = (HttpURLConnection) songURLObj.openConnection();
+                    filesize = filesizeCheck.getContentLength();
+                } catch (IOException e) {
+                    filesize = -1;
+                } finally {
+                    filesizeCheck.disconnect();
+                }
+
+                //File is larger than 10MB, skip it
+                if (filesize > 10000000 || filesize < 0) {
+                    System.err.println("Filesize for given song is not within valid limits, skipping.");
+                }
+            } while (filesize < 0 || filesize > 10000000 || songURLObj == null);
+
+            //Download the song
+            System.out.println("Downloading song from URL:\n" + songURL + "\nto file:\n" + tempMP3File.toString().replace('\\', '/'));
+            FileUtils.copyURLToFile(songURLObj, tempMP3File);
+            songFiles[i] = tempMP3File;
+            System.out.println("-----------------------------------------------------------------------------");
         }
+        System.out.println("Song buffer ready, launching!");
 
         //Launch the application
         launch(args);
 
         //Save where we are leaving off in the array
-        PrintWriter printWriter = new PrintWriter(lastIndexFile);
-        printWriter.write(Integer.toString(lastIndex));
+        PrintWriter printWriter = null;
+        try {
+            printWriter = new PrintWriter(tempFile);
+        } catch (FileNotFoundException e) {
+            try {
+                tempFile.createNewFile();
+                System.out.println("Made location store: " + BASE_DIR.replace('\\', '/') + "last.tmp");
+            } catch (IOException e1) {
+                return;
+            }
+        }
+        printWriter.write(Integer.toString(lastMP3PlayedIndex));
         printWriter.close();
     }
 }
