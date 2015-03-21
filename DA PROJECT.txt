@@ -1,5 +1,4 @@
-javafx audioclip
-http://zenjava.com/javafx/maven/
+javafx media/mediaplayer
 jsoup
 sqlite csv database
 
@@ -13,3 +12,15 @@ play that mp3
 
 include start/pause/play buttons
 include a skip button
+display metadata if there is any (album cover/artist(s)/playtime)
+keep track of what point in the buffer the user quits, and save that to a file
+also keep track of first time boot or not
+
+CATCH (BE VERBOSE)
+-----------------------
+404 exception - skip that when adding to the album list
+no songs on the album page - skip that when adding to the album list
+
+WARN
+-----------------------
+large song - send to console a message saying that the song may take a while to load (or warn user)
