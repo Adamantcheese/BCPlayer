@@ -89,6 +89,9 @@ public class Main extends Application {
                 do {
                     String albumURL = songHelper.getRandomAlbum();
                     songURL = songHelper.getRandomSongFromURL(albumURL);
+                    if(songURL == null) {
+                        System.err.println("Album URL:\n" + albumURL + "\ncontains no songs. Trying again.");
+                    }
                 } while (songURL == null);
 
                 //Check the filesize, make sure it is smaller than 10MB
