@@ -20,20 +20,18 @@ public class SongUtil {
     private Random RANDOMIZER;
     private final String ALBUM_LIST_FILE = "albums.csv";
     private final Pattern MP3_PATTERN = Pattern.compile("\"mp3-128\":\".*?\"");
-    private String[] ALBUM_LIST;
+    private ArrayList<String> ALBUM_LIST;
 
     public SongUtil() throws Exception {
-        //Load in the array of albums
-        ArrayList<String> albums = new ArrayList<String>(750);
+        //Load in the array of bandcamp-esque links
+        ALBUM_LIST = new ArrayList<String>(750);
         File albumFile = new File(Class.forName("SongUtil").getClassLoader().getResource(ALBUM_LIST_FILE).toURI());
         Scanner albumScanner = new Scanner(albumFile);
         while (albumScanner.hasNext()) {
             String URL = albumScanner.nextLine();
-            URL = URL.substring(1, URL.length() - 1);
-            albums.add(URL);
+            ALBUM_LIST.add(URL);
         }
         albumScanner.close();
-        ALBUM_LIST = albums.toArray(new String[albums.size()]);
 
         //Startup randomizer
         RANDOMIZER = new Random();
@@ -47,7 +45,7 @@ public class SongUtil {
     }
 
     public String getRandomAlbum() {
-        return ALBUM_LIST[RANDOMIZER.nextInt(ALBUM_LIST.length)];
+        return ALBUM_LIST.get(RANDOMIZER.nextInt(ALBUM_LIST.size()));
     }
 
     private String[] getSongsFromURL(String URL) {
@@ -98,7 +96,7 @@ public class SongUtil {
         return new Media(f.toURI().toString());
     }
 
-    public String[] getAlbumList () {
+    public ArrayList<String> getAlbumList () {
         return ALBUM_LIST;
     }
 }

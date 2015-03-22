@@ -1,6 +1,5 @@
 x javafx media/mediaplayer
 x jsoup
-x sqlite csv database
 
 ALGORITHM FOR PLAYING A RANDOM SONG:
 take csv and make string array
@@ -24,3 +23,7 @@ WARN
 -----------------------
 x large song - send to console a message saying that the song may take a while to load (or warn user)
   RESOLVED - skip songs that are >10MB
+
+
+TODO: Add in URL expansion for URLs that contain multiple album/track links on one page.
+TODO: Make song downloads run in their own threads so that the window doesn't display "Not Responding" when downloading a song.
