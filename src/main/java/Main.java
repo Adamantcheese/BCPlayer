@@ -29,42 +29,6 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, 300, 275));
         primaryStage.show();
 
-        //Start playing the first song
-        File mp3File = songFiles[lastMP3PlayedIndex];
-        Media song = songHelper.getMediaFromFile(mp3File);
-        MediaPlayer player = new MediaPlayer(song);
-        player.play();
-    }
-
-    public static void main (String[] args) throws Exception {
-        //Make the temp directory if it doesn't exist
-        File baseDir = new File(BASE_DIR);
-        if (!baseDir.exists()) {
-            baseDir.mkdirs();
-            System.out.println("Made temporary directory: " + BASE_DIR.replace('\\', '/'));
-        }
-
-        //Init the song helper
-        songHelper = new SongUtil();
-
-        //Allocate space for the song files
-        songFiles = new File[SONG_BUFFER_SIZE + 1];
-
-        //Load where we left off last
-        File tempFile = new File(BASE_DIR + "last.tmp");
-        if(tempFile.exists()) {
-            Scanner last = new Scanner(tempFile);
-            lastMP3PlayedIndex = last.nextInt();
-            last.close();
-        } else {
-            lastMP3PlayedIndex = 0;
-            tempFile.createNewFile();
-            PrintWriter printWriter = new PrintWriter(tempFile);
-            printWriter.write(Integer.toString(lastMP3PlayedIndex));
-            printWriter.close();
-            System.out.println("Made location store: " + BASE_DIR.replace('\\', '/') + "last.tmp");
-        }
-
         //Load up 5 random songs and make a blank one for the sixth
         //Only for initial startup
         for (int i = 0; i <= SONG_BUFFER_SIZE; i++){
@@ -107,8 +71,10 @@ public class Main extends Application {
                 }
 
                 //File is larger than 10MB, skip it
-                if (filesize > 10000000 || filesize < 0) {
-                    System.err.println("Filesize for given song is not within valid limits, skipping.");
+                if (filesize > 10000000) {
+                    System.err.println("Filesize for given song is greater than 10MB, skipping.");
+                } else if (filesize < 0) {
+                    System.err.println("File doesn't exist, trying again.");
                 }
             } while (filesize < 0 || filesize > 10000000 || songURLObj == null);
 
@@ -119,6 +85,42 @@ public class Main extends Application {
             System.out.println("-----------------------------------------------------------------------------");
         }
         System.out.println("Song buffer ready, launching!");
+
+        //Start playing the first song
+        File mp3File = songFiles[lastMP3PlayedIndex];
+        Media song = songHelper.getMediaFromFile(mp3File);
+        MediaPlayer player = new MediaPlayer(song);
+        player.play();
+    }
+
+    public static void main (String[] args) throws Exception {
+        //Make the temp directory if it doesn't exist
+        File baseDir = new File(BASE_DIR);
+        if (!baseDir.exists()) {
+            baseDir.mkdirs();
+            System.out.println("Made temporary directory: " + BASE_DIR.replace('\\', '/'));
+        }
+
+        //Init the song helper
+        songHelper = new SongUtil();
+
+        //Allocate space for the song files
+        songFiles = new File[SONG_BUFFER_SIZE + 1];
+
+        //Load where we left off last
+        File tempFile = new File(BASE_DIR + "last.tmp");
+        if(tempFile.exists()) {
+            Scanner last = new Scanner(tempFile);
+            lastMP3PlayedIndex = last.nextInt();
+            last.close();
+        } else {
+            lastMP3PlayedIndex = 0;
+            tempFile.createNewFile();
+            PrintWriter printWriter = new PrintWriter(tempFile);
+            printWriter.write(Integer.toString(lastMP3PlayedIndex));
+            printWriter.close();
+            System.out.println("Made location store: " + BASE_DIR.replace('\\', '/') + "last.tmp");
+        }
 
         //Launch the application
         launch(args);

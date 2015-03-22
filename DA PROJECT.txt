@@ -14,7 +14,6 @@ include start/pause/play buttons
 include a skip button
 display metadata if there is any (album cover/artist(s)/playtime)
 keep track of what point in the buffer the user quits, and save that to a file
-also keep track of first time boot or not
 
 CATCH (BE VERBOSE)
 -----------------------
@@ -23,4 +22,5 @@ x no songs on the album page - skip that when trying to get songs
 
 WARN
 -----------------------
-large song - send to console a message saying that the song may take a while to load (or warn user)
+x large song - send to console a message saying that the song may take a while to load (or warn user)
+  RESOLVED - skip songs that are >10MB

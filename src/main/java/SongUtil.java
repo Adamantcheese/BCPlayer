@@ -6,6 +6,7 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -18,6 +19,7 @@ import java.util.regex.Pattern;
 public class SongUtil {
     private Random RANDOMIZER;
     private final String ALBUM_LIST_FILE = "albums.csv";
+    private final Pattern MP3_PATTERN = Pattern.compile("\"mp3-128\":\".*?\"");
     private String[] ALBUM_LIST;
 
     public SongUtil() throws Exception {
@@ -49,35 +51,54 @@ public class SongUtil {
     }
 
     private String[] getSongsFromURL(String URL) {
+        //Get the album HTML document
         Document doc = null;
-        try {
-            doc = Jsoup.connect(URL).get();
-        } catch (IOException e) {
-            System.err.println("Exception: URL returns a connection error (probably 404): " + URL);
+        do {
+            try {
+                doc = Jsoup.connect(URL).get();
+            } catch (SocketTimeoutException e) {
+                continue;
+            } catch (IOException e) {
+                return new String[0];
+            }
+        } while (doc == null);
+
+        //Get all the javascript elements on the page
+        Elements scripts = doc.select("script");
+        if(scripts.size() == 0) {
             return new String[0];
         }
-        Elements scripts = doc.select("script");
-        Pattern mp3Pattern = Pattern.compile("\"mp3-128\":\".*?\"");
+
+        //Get the script that contains the mp3's
         Element mp3Script = null;
         for(Element script : scripts) {
-            Matcher tempMatcher = mp3Pattern.matcher(script.html());
+            Matcher tempMatcher = MP3_PATTERN.matcher(script.html());
             if(tempMatcher.find()) {
                 mp3Script = script;
                 break;
             }
         }
-        Matcher mp3Matcher = mp3Pattern.matcher(mp3Script.html());
+        if(mp3Script == null) {
+            return new String[0];
+        }
+
+        //Get all the mp3 URLs from the script
+        Matcher mp3Matcher = MP3_PATTERN.matcher(mp3Script.html());
         ArrayList<String> possibles = new ArrayList<String>(15);
         while (mp3Matcher.find()) {
             String found = mp3Matcher.group();
             possibles.add(found.substring(11, found.length() - 1));
         }
-        String[] songs = new String[possibles.size()];
-        possibles.toArray(songs);
-        return songs;
+
+        //Return a string array of mp3 URLs
+        return possibles.toArray(new String[possibles.size()]);
     }
 
     public Media getMediaFromFile(File f) {
         return new Media(f.toURI().toString());
+    }
+
+    public String[] getAlbumList () {
+        return ALBUM_LIST;
     }
 }
