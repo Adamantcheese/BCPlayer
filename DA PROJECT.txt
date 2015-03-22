@@ -26,4 +26,5 @@ x large song - send to console a message saying that the song may take a while t
 
 
 TODO: Add in URL expansion for URLs that contain multiple album/track links on one page.
+    REGEX: (<a href=\"/album/.*?\">|<a href=\"/track/.*?\">)*?
 TODO: Make song downloads run in their own threads so that the window doesn't display "Not Responding" when downloading a song.
