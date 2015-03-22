@@ -5,6 +5,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -19,6 +20,7 @@ public class Main extends Application {
     public static SongUtil songHelper;
     public static File[] songFiles;
     public static int lastMP3PlayedIndex;
+    public static String listLocation;
 
     @Override
     public void start (Stage primaryStage) throws Exception {
@@ -94,6 +96,17 @@ public class Main extends Application {
     }
 
     public static void main (String[] args) throws Exception {
+        //Allow the user to enter a location for the list to be found
+        if(args.length == 1) {
+            if(FilenameUtils.getExtension(args[0]) != "nll") {
+                System.err.println("Album list file should have the extension nll.");
+                return;
+            }
+            listLocation = args[0];
+        } else {
+            listLocation = null;
+        }
+
         //Make the temp directory if it doesn't exist
         File baseDir = new File(BASE_DIR);
         if (!baseDir.exists()) {

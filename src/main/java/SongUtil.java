@@ -18,14 +18,21 @@ import java.util.regex.Pattern;
  */
 public class SongUtil {
     private Random RANDOMIZER;
-    private final String ALBUM_LIST_FILE = "albums.csv";
+    private final String ALBUM_LIST_FILE = "albums.nll";
     private final Pattern MP3_PATTERN = Pattern.compile("\"mp3-128\":\".*?\"");
     private ArrayList<String> ALBUM_LIST;
 
     public SongUtil() throws Exception {
-        //Load in the array of bandcamp-esque links
+        //Init the album list
         ALBUM_LIST = new ArrayList<String>(750);
-        File albumFile = new File(Class.forName("SongUtil").getClassLoader().getResource(ALBUM_LIST_FILE).toURI());
+
+        //Load in the file from the specified location, or the internal file if none was given
+        File albumFile = null;
+        if(Main.listLocation != null) {
+            albumFile = new File(Main.listLocation);
+        } else {
+            albumFile = new File(Class.forName("SongUtil").getClassLoader().getResource(ALBUM_LIST_FILE).toURI());
+        }
         Scanner albumScanner = new Scanner(albumFile);
         while (albumScanner.hasNext()) {
             String URL = albumScanner.nextLine();
@@ -37,18 +44,18 @@ public class SongUtil {
         RANDOMIZER = new Random();
     }
     public String getRandomSongFromURL(String URL) {
-        String[] songs = getSongsFromURL(URL);
-        if(songs.length == 0) {
+        ArrayList<String> songs = getSongsFromURL(URL);
+        if(songs == null || songs.size() == 0) {
             return null;
         }
-        return songs[RANDOMIZER.nextInt(songs.length)];
+        return songs.get(RANDOMIZER.nextInt(songs.size()));
     }
 
     public String getRandomAlbum() {
         return ALBUM_LIST.get(RANDOMIZER.nextInt(ALBUM_LIST.size()));
     }
 
-    private String[] getSongsFromURL(String URL) {
+    private ArrayList<String> getSongsFromURL(String URL) {
         //Get the album HTML document
         Document doc = null;
         do {
@@ -57,14 +64,14 @@ public class SongUtil {
             } catch (SocketTimeoutException e) {
                 continue;
             } catch (IOException e) {
-                return new String[0];
+                return null;
             }
         } while (doc == null);
 
         //Get all the javascript elements on the page
         Elements scripts = doc.select("script");
         if(scripts.size() == 0) {
-            return new String[0];
+            return null;
         }
 
         //Get the script that contains the mp3's
@@ -77,7 +84,7 @@ public class SongUtil {
             }
         }
         if(mp3Script == null) {
-            return new String[0];
+            return null;
         }
 
         //Get all the mp3 URLs from the script
@@ -89,7 +96,7 @@ public class SongUtil {
         }
 
         //Return a string array of mp3 URLs
-        return possibles.toArray(new String[possibles.size()]);
+        return possibles;
     }
 
     public Media getMediaFromFile(File f) {
