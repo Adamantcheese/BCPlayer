@@ -10,12 +10,14 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 
 public class Main extends Application {
 
-    public static final String BASE_DIR = System.getProperty("java.io.tmpdir") + "BCPlayer/";
+    public static final int MB = 1000000;
+    public static final String BASE_DIR = System.getProperty("java.io.tmpdir") + "BCPlayer\\";
     public static final int SONG_BUFFER_SIZE = 5;
     public static SongUtil songHelper;
     public static File[] songFiles;
@@ -30,63 +32,6 @@ public class Main extends Application {
         primaryStage.setTitle("Bandcamp Player");
         primaryStage.setScene(new Scene(root, 300, 275));
         primaryStage.show();
-
-        //Load up 5 random songs and make a blank one for the sixth
-        //Only for initial startup
-        for (int i = 0; i <= SONG_BUFFER_SIZE; i++){
-            //Setup the file
-            File tempMP3File = new File(BASE_DIR + "temp" + i + ".mp3");
-            if (!tempMP3File.exists()) {
-                tempMP3File.createNewFile();
-            } else {
-                songFiles[i] = tempMP3File;
-                continue;
-            }
-            if(i == SONG_BUFFER_SIZE) {
-                continue;
-            }
-
-            //Get a song that is under the given filesize (10MB)
-            int filesize = -1;
-            String songURL = null;
-            URL songURLObj = null;
-            do {
-                //Get the song, avoiding pages with no songs/404 errors
-                do {
-                    String albumURL = songHelper.getRandomAlbum();
-                    songURL = songHelper.getRandomSongFromURL(albumURL);
-                    if(songURL == null) {
-                        System.err.println("Album URL:\n" + albumURL + "\ncontains no songs. Trying again.");
-                    }
-                } while (songURL == null);
-
-                //Check the filesize, make sure it is smaller than 10MB
-                songURLObj = new URL(songURL);
-                HttpURLConnection filesizeCheck = null;
-                try {
-                    filesizeCheck = (HttpURLConnection) songURLObj.openConnection();
-                    filesize = filesizeCheck.getContentLength();
-                } catch (IOException e) {
-                    filesize = -1;
-                } finally {
-                    filesizeCheck.disconnect();
-                }
-
-                //File is larger than 10MB, skip it
-                if (filesize > 10000000) {
-                    System.err.println("Filesize for given song is greater than 10MB, skipping.");
-                } else if (filesize < 0) {
-                    System.err.println("File doesn't exist, trying again.");
-                }
-            } while (filesize < 0 || filesize > 10000000 || songURLObj == null);
-
-            //Download the song
-            System.out.println("Downloading song from URL:\n" + songURL + "\nto file:\n" + tempMP3File.toString().replace('\\', '/'));
-            FileUtils.copyURLToFile(songURLObj, tempMP3File);
-            songFiles[i] = tempMP3File;
-            System.out.println("-----------------------------------------------------------------------------");
-        }
-        System.out.println("Song buffer ready, launching!");
 
         //Start playing the first song
         File mp3File = songFiles[lastMP3PlayedIndex];
@@ -111,7 +56,6 @@ public class Main extends Application {
         File baseDir = new File(BASE_DIR);
         if (!baseDir.exists()) {
             baseDir.mkdirs();
-            System.out.println("Made temporary directory: " + BASE_DIR.replace('\\', '/'));
         }
 
         //Init the song helper
@@ -132,10 +76,64 @@ public class Main extends Application {
             PrintWriter printWriter = new PrintWriter(tempFile);
             printWriter.write(Integer.toString(lastMP3PlayedIndex));
             printWriter.close();
-            System.out.println("Made location store: " + BASE_DIR.replace('\\', '/') + "last.tmp");
+        }
+
+        //Load up n random songs and make a blank one for the sixth
+        //Only for initial startup
+        ArrayList<SongDownloader> downloaders = new ArrayList<SongDownloader>();
+        for (int i = 0; i <= SONG_BUFFER_SIZE; i++){
+            //Setup the file
+            File tempMP3File = new File(BASE_DIR + "temp" + i + ".mp3");
+            if (!tempMP3File.exists()) {
+                tempMP3File.createNewFile();
+            } else {
+                songFiles[i] = tempMP3File;
+                continue;
+            }
+
+            //If it is the nth file, skip the download, it will be filled later
+            if(i == SONG_BUFFER_SIZE) {
+                continue;
+            }
+
+            //Get a song that is under the given filesize (10MB)
+            int filesize = -1;
+            URL songURL = null;
+            do {
+                //Get the song, avoiding pages with no songs/404 errors
+                songURL = songHelper.getRandomSong();
+
+                //Check the filesize, make sure it is smaller than 10MB
+                HttpURLConnection filesizeCheck = null;
+                try {
+                    filesizeCheck = (HttpURLConnection) songURL.openConnection();
+                    filesize = filesizeCheck.getContentLength();
+                } catch (IOException e) {
+                    filesize = -1;
+                } finally {
+                    filesizeCheck.disconnect();
+                }
+
+                //File is larger than 10MB, skip it
+                if (filesize > 10*MB) {
+                    System.err.println("Filesize for given song is greater than 10MB, skipping.");
+                } else if (filesize < 0) {
+                    System.err.println("File doesn't exist, trying again.");
+                }
+            } while (filesize < 0 || filesize > 10*MB);
+
+            //Download the song
+            downloaders.add(new SongDownloader(songURL, tempMP3File));
+            songFiles[i] = tempMP3File;
+        }
+
+        //Wait for all the downloads to finish
+        for(SongDownloader songDownloader : downloaders) {
+            songDownloader.join();
         }
 
         //Launch the application
+        System.out.println("Song buffer ready, launching!");
         launch(args);
 
         //Save where we are leaving off in the array
@@ -145,7 +143,6 @@ public class Main extends Application {
         } catch (FileNotFoundException e) {
             try {
                 tempFile.createNewFile();
-                System.out.println("Made location store: " + BASE_DIR.replace('\\', '/') + "last.tmp");
             } catch (IOException e1) {
                 return;
             }

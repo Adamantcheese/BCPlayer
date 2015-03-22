@@ -6,7 +6,9 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -43,6 +45,7 @@ public class SongUtil {
         //Startup randomizer
         RANDOMIZER = new Random();
     }
+
     public String getRandomSongFromURL(String URL) {
         ArrayList<String> songs = getSongsFromURL(URL);
         if(songs == null || songs.size() == 0) {
@@ -97,6 +100,18 @@ public class SongUtil {
 
         //Return a string array of mp3 URLs
         return possibles;
+    }
+
+    public URL getRandomSong() throws Exception {
+        String songURL = null;
+        do {
+            String albumURL = getRandomAlbum();
+            songURL = getRandomSongFromURL(albumURL);
+            if(songURL == null) {
+                System.err.println("Album URL:\n" + albumURL + "\ncontains no songs. Trying again.");
+            }
+        } while (songURL == null);
+        return new URL(songURL);
     }
 
     public Media getMediaFromFile(File f) {
