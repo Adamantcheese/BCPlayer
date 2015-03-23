@@ -1,7 +1,7 @@
+
 import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 
 /**
@@ -11,22 +11,24 @@ public class SongDownloader extends Thread {
 
     private URL internalURL;
     private File internalFile;
-    private boolean downloading;
+    private boolean lock = false;
 
-    public void run() {
+    public void run () {
+        if(lock) {
+            return;
+        }
         try {
             FileUtils.copyURLToFile(internalURL, internalFile);
         } catch (IOException e) {
             System.err.println("An error occurred downloading the song from URL:\n" + internalURL.toString());
             return;
         }
+        lock = true;
     }
 
-    public SongDownloader(URL songURL, File songFile) {
+    public SongDownloader (URL songURL, File songFile) {
         internalURL = songURL;
         internalFile = songFile;
-        downloading = true;
         this.start();
-        downloading = false;
     }
 }
