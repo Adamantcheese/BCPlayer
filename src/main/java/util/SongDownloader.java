@@ -1,7 +1,9 @@
+package util;
 
 import org.apache.commons.io.FileUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 /**
@@ -11,7 +13,8 @@ public class SongDownloader extends Thread {
 
     private URL internalURL;
     private File internalFile;
-    private boolean lock = false;
+    //Lock so that the file is only downloaded once
+    private boolean lock;
 
     public void run () {
         if(lock) {
@@ -29,6 +32,7 @@ public class SongDownloader extends Thread {
     public SongDownloader (URL songURL, File songFile) {
         internalURL = songURL;
         internalFile = songFile;
+        lock = false;
         this.start();
     }
 }

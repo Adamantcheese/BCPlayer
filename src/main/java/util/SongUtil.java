@@ -1,12 +1,18 @@
+package util;
 
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.*;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.regex.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Jacob on 3/18/2015.
@@ -15,12 +21,7 @@ public class SongUtil {
 
     private static SongUtil INSTANCE;
 
-    private static Random RANDOMIZER = new Random();
     private ArrayList<String> ALBUM_LIST;
-
-    public static SongUtil getInstance() throws Exception {
-        return getInstance(null);
-    }
 
     public static SongUtil getInstance (String loc) throws Exception {
         if (INSTANCE == null) {
@@ -38,7 +39,7 @@ public class SongUtil {
         if (loc != null) {
             albumFile = new File(loc);
         } else {
-            albumFile = new File(SongUtil.class.getResource("albums.nll").toURI());
+            albumFile = Constants.TRACK_FILE;
         }
 
         //Internalize the given file and ignore it afterwards
@@ -54,18 +55,18 @@ public class SongUtil {
     }
 
     public static String getRandomSongFromURL (String URL) {
-        ArrayList<String> songs = getSongsFromURL(URL);
+        ArrayList<String> songs = getSongs(URL);
         if (songs == null || songs.size() == 0) {
             return null;
         }
-        return songs.get(RANDOMIZER.nextInt(songs.size()));
+        return songs.get(Constants.RANDOMIZER.nextInt(songs.size()));
     }
 
     public String getRandomAlbum () {
-        return ALBUM_LIST.get(RANDOMIZER.nextInt(ALBUM_LIST.size()));
+        return ALBUM_LIST.get(Constants.RANDOMIZER.nextInt(ALBUM_LIST.size()));
     }
 
-    private static ArrayList<String> getSongsFromURL (String URL) {
+    private static ArrayList<String> getSongs (String URL) {
         //Get the album HTML document
         Document doc = null;
         do {
@@ -122,9 +123,5 @@ public class SongUtil {
             }
         } while (songURL == null);
         return new URL(songURL);
-    }
-
-    public ArrayList<String> getAlbumList () {
-        return ALBUM_LIST;
     }
 }

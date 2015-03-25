@@ -1,15 +1,23 @@
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.*;
-import javafx.scene.media.*;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import org.apache.commons.io.FilenameUtils;
+import util.Constants;
+import util.SongDownloader;
+import util.SongUtil;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main extends Application {
 
@@ -17,40 +25,15 @@ public class Main extends Application {
     public static File[] songFiles;
     public static int lastMP3PlayedIndex;
 
-    @Override
-    public void start (Stage primaryStage) throws Exception {
-        //Display the window with UI
-        Parent root = null;
-        root = FXMLLoader.load(Main.class.getResource("ui.fxml"));
-        primaryStage.setTitle("Bandcamp Player");
-        primaryStage.setScene(new Scene(root, 300, 300));
-        primaryStage.show();
-
-        //Start playing the first song
-        File mp3File = songFiles[lastMP3PlayedIndex];
-        Media song = new Media(mp3File.toURI().toString());
-        MediaPlayer player = new MediaPlayer(song);
-        player.play();
-
-        //Start downloading the next song
-        int nextDL = lastMP3PlayedIndex - 1;
-        if (nextDL < 0) {
-            nextDL = Constants.SONG_BUFFER_SIZE;
-        }
-        mp3File = songFiles[nextDL];
-        SongDownloader temp = new SongDownloader(songHelper.getRandomSong(), mp3File);
-
-        //Move the last played index forward
-        lastMP3PlayedIndex++;
-    }
-
     public static void main (String[] args) throws Exception {
-        //Allow the user to enter a location for the list to be found
+        //If the user specified a file, make sure it has the right extension
+        if (args.length == 1 && FilenameUtils.getExtension(args[0]) != "nll") {
+            System.err.println("File should have extension nll, with one URL per line.");
+            return;
+        }
+
+        //Initialize the song helper
         if (args.length == 1) {
-            if (FilenameUtils.getExtension(args[0]) != "nll") {
-                System.err.println("Album list file should have the extension nll.");
-                return;
-            }
             songHelper = SongUtil.getInstance(args[0]);
         } else {
             songHelper = SongUtil.getInstance(null);
@@ -66,15 +49,14 @@ public class Main extends Application {
         songFiles = new File[Constants.SONG_BUFFER_SIZE + 1];
 
         //Load where we left off last
-        File tempFile = new File(Constants.BASE_DIR + "last.tmp");
-        if (tempFile.exists()) {
-            Scanner last = new Scanner(tempFile);
+        if (Constants.TEMP_FILE.exists()) {
+            Scanner last = new Scanner(Constants.TEMP_FILE);
             lastMP3PlayedIndex = last.nextInt();
             last.close();
         } else {
             lastMP3PlayedIndex = 0;
-            tempFile.createNewFile();
-            PrintWriter printWriter = new PrintWriter(tempFile);
+            Constants.TEMP_FILE.createNewFile();
+            PrintWriter printWriter = new PrintWriter(Constants.TEMP_FILE);
             printWriter.write(Integer.toString(lastMP3PlayedIndex));
             printWriter.close();
         }
@@ -115,13 +97,6 @@ public class Main extends Application {
                 } finally {
                     filesizeCheck.disconnect();
                 }
-
-                //File is larger than 10MB, skip it
-                if (filesize > 10 * Constants.MAX_FILESIZE) {
-                    System.err.println("Filesize for given song is greater than " + Constants.MAX_MB + "MB, skipping.");
-                } else if (filesize < 0) {
-                    System.err.println("File doesn't exist, trying again.");
-                }
             } while (filesize < 0 || filesize > 10 * Constants.MAX_FILESIZE);
 
             //Download the song
@@ -141,15 +116,42 @@ public class Main extends Application {
         //Save where we are leaving off in the array
         PrintWriter printWriter = null;
         try {
-            printWriter = new PrintWriter(tempFile);
+            printWriter = new PrintWriter(Constants.TEMP_FILE);
         } catch (FileNotFoundException e) {
             try {
-                tempFile.createNewFile();
+                Constants.TEMP_FILE.createNewFile();
             } catch (IOException e1) {
                 return;
             }
         }
         printWriter.write(Integer.toString(lastMP3PlayedIndex));
         printWriter.close();
+    }
+
+    @Override
+    public void start (Stage primaryStage) throws Exception {
+        //Display the window with UI
+        Parent root = null;
+        root = FXMLLoader.load(Main.class.getResource("ui.fxml"));
+        primaryStage.setTitle("Bandcamp Player");
+        primaryStage.setScene(new Scene(root, 300, 300));
+        primaryStage.show();
+
+        //Start playing the first song
+        File mp3File = songFiles[lastMP3PlayedIndex];
+        Media song = new Media(mp3File.toURI().toString());
+        MediaPlayer player = new MediaPlayer(song);
+        player.play();
+
+        //Start downloading the next song
+        int nextDL = lastMP3PlayedIndex - 1;
+        if (nextDL < 0) {
+            nextDL = Constants.SONG_BUFFER_SIZE;
+        }
+        mp3File = songFiles[nextDL];
+        SongDownloader temp = new SongDownloader(songHelper.getRandomSong(), mp3File);
+
+        //Move the last played index forward
+        lastMP3PlayedIndex++;
     }
 }
