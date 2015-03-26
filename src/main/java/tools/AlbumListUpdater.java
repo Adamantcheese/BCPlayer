@@ -156,6 +156,7 @@ public class AlbumListUpdater {
                             System.out.println("\t\tAdded track: " + expandedURL2);
                         }
                     } else {
+                        //The URL is a track, just add it straight up
                         trackList.add(expandedURL);
                         System.out.println("\tAdded track: " + expandedURL);
                     }
@@ -165,13 +166,7 @@ public class AlbumListUpdater {
         albumScanner.close();
 
         //Write the expanded version of the file back
-        PrintWriter albumWriter;
-        try {
-            albumWriter = new PrintWriter(Constants.getInternalTrackFile());
-        } catch (FileNotFoundException e) {
-            Constants.getInternalTrackFile().createNewFile();
-            albumWriter = new PrintWriter(Constants.getInternalTrackFile());
-        }
+        PrintWriter albumWriter = new PrintWriter(Constants.TRACK_FILE);
         for(int i = 0; i < trackList.size(); i++) {
             albumWriter.print(trackList.get(i));
             if(i != trackList.size() - 1) {

@@ -5,13 +5,14 @@ import javafx.scene.Scene;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+import objects.Track;
 import org.apache.commons.io.FilenameUtils;
+import tools.AlbumListUpdater;
 import util.Constants;
-import util.SongDownloader;
-import util.SongUtil;
+import objects.SongDownloader;
+import constructs.TrackContainer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
@@ -21,7 +22,7 @@ import java.util.Scanner;
 
 public class Main extends Application {
 
-    public static SongUtil songHelper;
+    public static TrackContainer songHelper;
     public static File[] songFiles;
     public static int lastMP3PlayedIndex;
 
@@ -32,17 +33,37 @@ public class Main extends Application {
             return;
         }
 
-        //Initialize the song helper
-        if (args.length == 1) {
-            songHelper = SongUtil.getInstance(args[0]);
-        } else {
-            songHelper = SongUtil.getInstance(null);
+        //Copy the internal track file to the temp directory, or expand the one specified to the temp directory
+        if (!Constants.TRACK_FILE.exists()){
+            if (args.length == 1) {
+                System.out.println("Warning: The operation may take upwards of 30 minutes to finish, do you want to continue? (Y/N)");
+                Scanner keyboard = new Scanner(System.in);
+                String ans = "";
+                while(!ans.equals("y") || !ans.equals("n")) {
+                    ans = keyboard.nextLine().toLowerCase();
+                }
+                if(ans.equals("n")) {
+                    return;
+                } else {
+                    AlbumListUpdater.update(args[0]);
+                }
+            } else {
+                Scanner tempScanner = new Scanner(Constants.getInternalTrackFile());
+                PrintWriter tempWriter = new PrintWriter(Constants.TRACK_FILE);
+                while (tempScanner.hasNextLine()) {
+                    tempWriter.println(tempScanner.nextLine());
+                }
+                tempScanner.close();
+                tempWriter.close();
+            }
         }
 
+        //Initialize the song helper
+        songHelper = TrackContainer.getInstance();
+
         //Make the temp directory if it doesn't exist
-        File baseDir = new File(Constants.BASE_DIR);
-        if (!baseDir.exists()) {
-            baseDir.mkdirs();
+        if (!Constants.BASE_DIR.exists()) {
+            Constants.BASE_DIR.mkdirs();
         }
 
         //Allocate space for the song files
@@ -52,6 +73,10 @@ public class Main extends Application {
         if (Constants.TEMP_FILE.exists()) {
             Scanner last = new Scanner(Constants.TEMP_FILE);
             lastMP3PlayedIndex = last.nextInt();
+            //If the user changed the buffer size at compile time, but had a previous save file, reset the play index
+            if(lastMP3PlayedIndex >= Constants.SONG_BUFFER_SIZE || lastMP3PlayedIndex < 0) {
+                lastMP3PlayedIndex = 0;
+            }
             last.close();
         } else {
             lastMP3PlayedIndex = 0;
@@ -86,11 +111,12 @@ public class Main extends Application {
             do {
                 //Get the song, avoiding pages with no songs/404 errors
                 songURL = songHelper.getRandomSong();
+                Track song = songHelper.getSong(songURL.toString());
 
                 //Check the filesize, make sure it is smaller than 10MB
                 HttpURLConnection filesizeCheck = null;
                 try {
-                    filesizeCheck = (HttpURLConnection) songURL.openConnection();
+                    filesizeCheck = (HttpURLConnection) song.getTrackURL().openConnection();
                     filesize = filesizeCheck.getContentLength();
                 } catch (IOException e) {
                     filesize = -1;
@@ -114,16 +140,7 @@ public class Main extends Application {
         launch(args);
 
         //Save where we are leaving off in the array
-        PrintWriter printWriter = null;
-        try {
-            printWriter = new PrintWriter(Constants.TEMP_FILE);
-        } catch (FileNotFoundException e) {
-            try {
-                Constants.TEMP_FILE.createNewFile();
-            } catch (IOException e1) {
-                return;
-            }
-        }
+        PrintWriter printWriter = new PrintWriter(Constants.TEMP_FILE);
         printWriter.write(Integer.toString(lastMP3PlayedIndex));
         printWriter.close();
     }
@@ -131,8 +148,7 @@ public class Main extends Application {
     @Override
     public void start (Stage primaryStage) throws Exception {
         //Display the window with UI
-        Parent root = null;
-        root = FXMLLoader.load(Main.class.getResource("ui.fxml"));
+        Parent root = FXMLLoader.load(Main.class.getResource("ui.fxml"));
         primaryStage.setTitle("Bandcamp Player");
         primaryStage.setScene(new Scene(root, 300, 300));
         primaryStage.show();

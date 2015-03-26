@@ -11,10 +11,11 @@ public class Constants {
     private static final int MAX_MB = 10;
     public static final int MAX_FILESIZE = MAX_MB * MB;
 
-    public static final String BASE_DIR = System.getProperty("java.io.tmpdir") + "BCPlayer\\";
-    private static final String TRACK_FILE_DIR = BASE_DIR + "tracks.nll";
-    private static final String TEMP_FILE_DIR = BASE_DIR + "last.tmp";
+    public static final String BASE_TEMP_DIR = System.getProperty("java.io.tmpdir") + "BCPlayer\\";
+    private static final String TRACK_FILE_DIR = BASE_TEMP_DIR + "tracks.nll";
+    private static final String TEMP_FILE_DIR = BASE_TEMP_DIR + "last.tmp";
 
+    public static final File BASE_DIR = new File(BASE_TEMP_DIR);
     public static final File TRACK_FILE = new File(TRACK_FILE_DIR);
     public static final File TEMP_FILE = new File(TEMP_FILE_DIR);
     private static File INTERNAL_TRACK_FILE = null;
