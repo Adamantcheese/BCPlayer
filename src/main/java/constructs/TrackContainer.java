@@ -3,7 +3,6 @@ package constructs;
 import objects.Track;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import sun.security.krb5.internal.PAData;
 import util.Constants;
 
 import java.io.IOException;
@@ -26,6 +25,7 @@ public class TrackContainer {
 
     private final Pattern TRACK_NAME = Pattern.compile("\"title\":\".*?\",\"id\"");
     private final Pattern ARTIST_NAME = Pattern.compile("artist: \".*?\",");
+    private final Pattern DURATION = Pattern.compile("\"duration\":.*?,");
     private final Pattern ART_URL = Pattern.compile("artFullsizeUrl: \".*?\",");
     private final Pattern MP3_URL = Pattern.compile("\"mp3-128\":\".*?\"");
 
@@ -49,7 +49,10 @@ public class TrackContainer {
         albumScanner.close();
     }
 
-    public Track getSong (String URL) {
+    public Track getRandomSong () {
+        //Grab a random track URL
+        String URL = TRACK_LIST.get(Constants.RANDOMIZER.nextInt(TRACK_LIST.size()));
+
         //Get the track HTML document
         Document doc = null;
         do {
@@ -68,6 +71,7 @@ public class TrackContainer {
         //Setup the matchers for grabbing data
         Matcher trackNameMatcher = TRACK_NAME.matcher(script);
         Matcher artistNameMatcher = ARTIST_NAME.matcher(script);
+        Matcher durationMatcher = DURATION.matcher(script);
         Matcher artURLMatcher = ART_URL.matcher(script);
         Matcher mp3URLMatcher = MP3_URL.matcher(script);
 
@@ -77,6 +81,10 @@ public class TrackContainer {
 
         String artistName = artistNameMatcher.group();
         artistName = artistName.substring(8, artistName.length() - 2);
+
+        String duration = durationMatcher.group();
+        duration = duration.substring(10, duration.length() - 1);
+        double dur = Double.parseDouble(duration);
 
         String artURL = artURLMatcher.group();
         artURL = artURL.substring(16, artURL.length() - 2);
@@ -98,10 +106,6 @@ public class TrackContainer {
 
         System.out.println("pausing line");
         //Construct and return the Track object
-        return new Track(trackName, artistName, art, mp3);
-    }
-
-    public URL getRandomSong () throws Exception {
-        return new URL(TRACK_LIST.get(Constants.RANDOMIZER.nextInt(TRACK_LIST.size())));
+        return new Track(trackName, artistName, dur, art, mp3);
     }
 }

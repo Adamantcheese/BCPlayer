@@ -1,5 +1,11 @@
-x javafx media/mediaplayer
+x javafx for display
 x jsoup
+jlayer for media
+
+LINKS:
+https://stackoverflow.com/questions/9818155/stream-music-with-java
+http://www.javazoom.net/javalayer/docs/docs1.0/index.html
+https://stackoverflow.com/questions/6932369/inputstream-from-a-file-url
 
 x ALGORITHM FOR PLAYING A RANDOM SONG:
 take csv and make string array

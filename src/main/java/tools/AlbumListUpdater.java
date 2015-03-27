@@ -9,7 +9,6 @@ import org.jsoup.select.Elements;
 import util.Constants;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.SocketTimeoutException;
