@@ -7,34 +7,12 @@ https://stackoverflow.com/questions/9818155/stream-music-with-java
 http://www.javazoom.net/javalayer/docs/docs1.0/index.html
 https://stackoverflow.com/questions/6932369/inputstream-from-a-file-url
 
-x ALGORITHM FOR PLAYING A RANDOM SONG:
-take csv and make string array
-grab a random item from the array
-use jsoup to grab the page
-grab all the stuff tagged as "mp3-128"
-grab a random one from that set of mp3's
-play that mp3
+include pause/play/next/prev buttons
+display metadata (album cover/artist/trackname/playtime[current versus total])
 
-include start/pause/play buttons
-include a skip button
-display metadata if there is any (album cover/artist(s)/playtime)
-keep track of what point in the buffer the user quits, and save that to a file
--- have the facility to do this, but currently doesn't do anything
+playtime format:
+xx:xx/xx:xx
 
-CATCH (BE VERBOSE)
------------------------
-x 404 exception - skip that when trying to get songs
-x no songs on the album page - skip that when trying to get songs
+OR if the track is several hours long
 
-WARN
------------------------
-x large song - send to console a message saying that the song may take a while to load (or warn user)
-  RESOLVED - skip songs that are >10MB
-
-
-TODO: Add in URL expansion for URLs that contain multiple album/track links on one page.
-    REGEX: (<a href=\"/album/.*?\"><div class=\"art\">|<a href=\"/track/.*?\"><div class="art">)*?
-    RESOLVED: Moved to own tool that updates the list automatically.
-TODO: Make song downloads run in their own threads so that the window doesn't display "Not Responding" when downloading a song.
-    RESOLVED: All songs download at the same time, but the window still displays not responding. Changed so that initial boot
-              downloads all the songs and doesn't display the window until the buffer is ready.
+xx:xx:xx/xx:xx:xx
