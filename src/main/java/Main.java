@@ -3,17 +3,40 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javazoom.jl.player.Player;
+import objects.Track;
 import org.apache.commons.io.FilenameUtils;
 import tools.AlbumListUpdater;
 import util.Constants;
 import constructs.TrackContainer;
 
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class Main extends Application {
 
     public static TrackContainer trackHelper;
+
+    @Override
+    public void start (Stage primaryStage) throws Exception {
+        //Display the window with UI
+        Parent root = FXMLLoader.load(Main.class.getResource("ui.fxml"));
+        primaryStage.setTitle("Bandcamp Player");
+        primaryStage.setScene(new Scene(root, 300, 300));
+        primaryStage.show();
+
+        Track track = trackHelper.getRandomSong();
+        InputStream song = track.getTrackURL().openStream();
+        Player player = new Player(song);
+        player.play();
+
+        while(!player.isComplete()) {
+            System.out.println(player.getPosition()/1000/60 + ":" + player.getPosition()/1000 + "/" + track.getStringDuration());
+        }
+
+        System.out.println("Finished playing random song.");
+    }
 
     public static void main (String[] args) throws Exception {
         //If the user specified a file, make sure it has the right extension
@@ -57,14 +80,5 @@ public class Main extends Application {
 
         //Launch the application
         launch(args);
-    }
-
-    @Override
-    public void start (Stage primaryStage) throws Exception {
-        //Display the window with UI
-        Parent root = FXMLLoader.load(Main.class.getResource("ui.fxml"));
-        primaryStage.setTitle("Bandcamp Player");
-        primaryStage.setScene(new Scene(root, 300, 300));
-        primaryStage.show();
     }
 }
