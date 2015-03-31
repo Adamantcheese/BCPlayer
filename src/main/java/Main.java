@@ -1,8 +1,11 @@
+import constructs.PlayerContainer;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javazoom.jl.player.Player;
 import objects.Track;
 import org.apache.commons.io.FilenameUtils;
@@ -12,6 +15,7 @@ import constructs.TrackContainer;
 
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.util.Scanner;
 
 public class Main extends Application {
@@ -20,22 +24,23 @@ public class Main extends Application {
 
     @Override
     public void start (Stage primaryStage) throws Exception {
+        //Start playing the song
+        //Track track = trackHelper.getRandomSong();
+        URL track = new URL("http://popplers5.bandcamp.com/download/track?enc=mp3-128&fsig=587c860516a710c87797ce1b6dbf9043&id=968334095&stream=1&ts=1427611386.0");
+        final PlayerContainer temp = new PlayerContainer(track);
+        temp.start();
+
         //Display the window with UI
         Parent root = FXMLLoader.load(Main.class.getResource("ui.fxml"));
         primaryStage.setTitle("Bandcamp Player");
         primaryStage.setScene(new Scene(root, 300, 300));
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle (WindowEvent event) {
+                temp.stop();
+            }
+        });
         primaryStage.show();
-
-        Track track = trackHelper.getRandomSong();
-        InputStream song = track.getTrackURL().openStream();
-        Player player = new Player(song);
-        player.play();
-
-        while(!player.isComplete()) {
-            System.out.println(player.getPosition()/1000/60 + ":" + player.getPosition()/1000 + "/" + track.getStringDuration());
-        }
-
-        System.out.println("Finished playing random song.");
     }
 
     public static void main (String[] args) throws Exception {
