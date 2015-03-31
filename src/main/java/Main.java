@@ -27,7 +27,7 @@ public class Main extends Application {
         //Start playing the song
         //Track track = trackHelper.getRandomSong();
         URL track = new URL("http://popplers5.bandcamp.com/download/track?enc=mp3-128&fsig=587c860516a710c87797ce1b6dbf9043&id=968334095&stream=1&ts=1427611386.0");
-        final PlayerContainer temp = new PlayerContainer(track);
+        PlayerContainer temp = new PlayerContainer(track);
         temp.start();
 
         //Display the window with UI
@@ -37,7 +37,7 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle (WindowEvent event) {
-                temp.stop();
+                System.exit(0);
             }
         });
         primaryStage.show();
