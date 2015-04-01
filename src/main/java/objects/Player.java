@@ -15,11 +15,13 @@ public class Player {
     private Decoder decoder;
     private AudioDevice audio;
     private boolean playing;
+    private boolean stop;
     private int lastPosition;
     private PlaybackListener listener;
 
     public Player(InputStream stream) throws JavaLayerException {
         this.playing = false;
+        this.stop = true;
         this.lastPosition = 0;
 
         this.bitstream = new Bitstream(stream);
@@ -30,12 +32,30 @@ public class Player {
         this.audio.open(this.decoder);
     }
 
+    public void play() throws JavaLayerException {
+        this.play(Integer.MAX_VALUE);
+    }
+
     public boolean play(int frames) throws JavaLayerException {
         boolean ret = true;
         this.playing = true;
+        this.stop = false;
 
         while(frames-- > 0 && ret) {
-            if (this.playing) {
+            if (this.stop) {
+                AudioDevice out = this.audio;
+                if(out != null) {
+                    out.flush();
+                    synchronized(this) {
+                        this.close();
+                    }
+
+                    if(this.listener != null) {
+                        this.listener.playbackFinished(this.createEvent(out, PlaybackEvent.STOPPED));
+                    }
+                }
+                return ret;
+            } else if (this.playing) {
                 ret = decodeFrame();
             } else {
                 try {
@@ -59,6 +79,7 @@ public class Player {
         }
 
         this.playing = false;
+        this.stop = true;
 
         return ret;
     }
@@ -67,6 +88,7 @@ public class Player {
         AudioDevice out = this.audio;
         if(out != null) {
             this.playing = false;
+            this.stop = true;
             this.audio = null;
             out.close();
             this.lastPosition = out.getPosition();
@@ -117,26 +139,6 @@ public class Player {
         }
     }
 
-    protected boolean skipFrame() throws JavaLayerException {
-        Header h = this.bitstream.readFrame();
-        if(h == null) {
-            return false;
-        } else {
-            this.bitstream.closeFrame();
-            return true;
-        }
-    }
-
-    public boolean play(int start, int end) throws JavaLayerException {
-        boolean ret = true;
-
-        for(int offset = start; offset-- > 0 && ret; ret = this.skipFrame()) {
-
-        }
-
-        return this.play(end - start);
-    }
-
     private PlaybackEvent createEvent(int id) {
         return this.createEvent(this.audio, id);
     }
@@ -149,7 +151,7 @@ public class Player {
         this.listener = listener;
     }
 
-    public void pause() {
+    public void pauseToggle() {
         if(this.playing) {
             this.listener.playbackPaused(this.createEvent(PlaybackEvent.PAUSED));
             this.playing = false;
@@ -157,5 +159,12 @@ public class Player {
             this.listener.playbackUnpaused(this.createEvent(PlaybackEvent.UNPAUSED));
             this.playing = true;
         }
+    }
+
+    public void stop() {
+        if(!this.playing) {
+            this.playing = true;
+        }
+        this.stop = true;
     }
 }

@@ -5,6 +5,7 @@ public class PlaybackEvent {
     public static int PAUSED = 1;
     public static int UNPAUSED = 2;
     public static int FINISHED = 3;
+    public static int STOPPED = 4;
 
     private Player source;
     private int frame;

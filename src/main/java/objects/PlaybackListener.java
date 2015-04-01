@@ -16,4 +16,8 @@ public abstract class PlaybackListener {
     public void playbackUnpaused(PlaybackEvent evt) {
 
     }
+
+    public void playbackStopped(PlaybackEvent evt) {
+
+    }
 }

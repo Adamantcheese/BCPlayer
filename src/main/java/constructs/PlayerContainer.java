@@ -14,43 +14,20 @@ import java.net.URL;
 public class PlayerContainer extends Thread {
 
     private Player player;
-    private int frame;
 
     public PlayerContainer(Track track) throws Exception {
         player = new Player(track.getTrackURL().openStream());
-        player.setPlayBackListener(new PlaybackListener() {
-            @Override
-            public void playbackFinished (PlaybackEvent evt) {
-
-            }
-
-            @Override
-            public void playbackPaused (PlaybackEvent evt) {
-
-            }
-
-            @Override
-            public void playbackUnpaused (PlaybackEvent evt) {
-
-            }
-        });
-        frame = 0;
+        setupListener();
     }
 
     public PlayerContainer(URL test) throws Exception {
         player = new Player(test.openStream());
-        player.setPlayBackListener(new PlaybackListener() {
-            @Override
-            public void playbackFinished (PlaybackEvent evt) {
-                frame = evt.getFrame();
-            }
-        });
-        frame = 0;
+        setupListener();
     }
 
     public void run(){
         try {
-            player.play(frame, Integer.MAX_VALUE);
+            player.play();
         } catch (JavaLayerException e) {
             return;
         }
@@ -60,13 +37,12 @@ public class PlayerContainer extends Thread {
         this.start();
     }
 
-    public void pauseSong() {
-        player.pause();
+    public void togglePause() {
+        player.pauseToggle();
     }
 
     public void stopSong() {
-        this.stop();
-        frame = 0;
+        player.stop();
     }
 
     public String getCurrentTime() {
@@ -81,5 +57,30 @@ public class PlayerContainer extends Thread {
         dur += minutes + ":";
         dur += seconds;
         return dur;
+    }
+
+    public void setupListener() {
+        player.setPlayBackListener(new PlaybackListener() {
+            @Override
+            public void playbackFinished (PlaybackEvent evt) {
+                System.out.println("Finished playing song.");
+                playbackStopped(evt);
+            }
+
+            @Override
+            public void playbackPaused (PlaybackEvent evt) {
+                System.out.println("Paused song.");
+            }
+
+            @Override
+            public void playbackUnpaused (PlaybackEvent evt) {
+                System.out.println("Unpaused song.");
+            }
+
+            @Override
+            public void playbackStopped (PlaybackEvent evt) {
+                System.out.println("Stopped song.");
+            }
+        });
     }
 }

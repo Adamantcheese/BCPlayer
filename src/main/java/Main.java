@@ -47,6 +47,14 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(sp, 300, 300));
 
         primaryStage.show();
+
+        temp.togglePause();
+        Thread.sleep(5000);
+
+        temp.togglePause();
+        Thread.sleep(5000);
+
+        temp.stopSong();
     }
 
     public static void main (String[] args) throws Exception {
