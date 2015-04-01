@@ -4,42 +4,48 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javazoom.jl.player.Player;
 import objects.Track;
 import org.apache.commons.io.FilenameUtils;
 import tools.AlbumListUpdater;
 import util.Constants;
-import constructs.TrackContainer;
 
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Scanner;
 
 public class Main extends Application {
 
-    public static TrackContainer trackHelper;
-
     @Override
     public void start (Stage primaryStage) throws Exception {
         //Start playing the song
-        //Track track = trackHelper.getRandomSong();
+        //Track track = Constants.getTrackHelper().getRandomSong();
+        //PlayerContainer player = new PlayerContainer(track.getTrackURL());
+        //player.playSong();
         URL track = new URL("http://popplers5.bandcamp.com/download/track?enc=mp3-128&fsig=587c860516a710c87797ce1b6dbf9043&id=968334095&stream=1&ts=1427611386.0");
         PlayerContainer temp = new PlayerContainer(track);
-        temp.start();
+        temp.playSong();
 
         //Display the window with UI
         Parent root = FXMLLoader.load(Main.class.getResource("ui.fxml"));
         primaryStage.setTitle("Bandcamp Player");
-        primaryStage.setScene(new Scene(root, 300, 300));
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle (WindowEvent event) {
                 System.exit(0);
             }
         });
+        primaryStage.setResizable(false);
+
+        StackPane sp = new StackPane();
+        ImageView imgView = new ImageView(Constants.getDefaultAlbumCover());
+        sp.getChildren().add(imgView);
+
+        primaryStage.setScene(new Scene(sp, 300, 300));
+
         primaryStage.show();
     }
 
@@ -74,9 +80,6 @@ public class Main extends Application {
                 tempWriter.close();
             }
         }
-
-        //Initialize the song helper
-        trackHelper = TrackContainer.getInstance();
 
         //Make the temp directory if it doesn't exist
         if (!Constants.BASE_DIR.exists()) {

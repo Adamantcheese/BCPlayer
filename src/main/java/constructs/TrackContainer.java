@@ -19,8 +19,6 @@ import java.util.regex.Pattern;
  */
 public class TrackContainer {
 
-    private static TrackContainer INSTANCE;
-
     private ArrayList<String> TRACK_LIST;
 
     private final Pattern TRACK_NAME = Pattern.compile("\"title\":\".*?\",\"id\"");
@@ -29,14 +27,7 @@ public class TrackContainer {
     private final Pattern ART_URL = Pattern.compile("artFullsizeUrl: \".*?\",");
     private final Pattern MP3_URL = Pattern.compile("\"mp3-128\":\".*?\"");
 
-    public static TrackContainer getInstance () throws Exception {
-        if (INSTANCE == null) {
-            INSTANCE = new TrackContainer();
-        }
-        return INSTANCE;
-    }
-
-    private TrackContainer () throws Exception {
+    public TrackContainer() throws Exception {
         //Init the album list
         TRACK_LIST = new ArrayList<String>(15000);
 

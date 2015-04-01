@@ -1,5 +1,8 @@
 package util;
 
+import constructs.TrackContainer;
+import javafx.scene.image.Image;
+
 import java.io.File;
 import java.util.Random;
 
@@ -22,4 +25,20 @@ public class Constants {
     }
 
     public static final Random RANDOMIZER = new Random();
+
+    private static TrackContainer TRACK_HELPER = null;
+    public static TrackContainer getTrackHelper() throws Exception {
+        if(TRACK_HELPER == null) {
+            TRACK_HELPER = new TrackContainer();
+        }
+        return TRACK_HELPER;
+    }
+
+    private static Image DEFAULT_ALBUM_COVER = null;
+    public static Image getDefaultAlbumCover() throws Exception {
+        if(DEFAULT_ALBUM_COVER == null) {
+            DEFAULT_ALBUM_COVER = new Image(Constants.class.getResource("../default_cover.png").toString());
+        }
+        return DEFAULT_ALBUM_COVER;
+    }
 }

@@ -1,11 +1,9 @@
 x javafx for display
 x jsoup
-jlayer for media
+x jlayer for media
 
 LINKS:
-https://stackoverflow.com/questions/9818155/stream-music-with-java
 http://www.javazoom.net/javalayer/docs/docs1.0/index.html
-https://stackoverflow.com/questions/6932369/inputstream-from-a-file-url
 
 http://what-when-how.com/javafx-2/playing-audio-using-the-media-classes-javafx-2-part-2/
 
