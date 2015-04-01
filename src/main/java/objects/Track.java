@@ -43,14 +43,13 @@ public class Track {
 
     public String getStringDuration() {
         String dur = "";
-        int hours = (int) (duration/60/60);
-        int minutes = (int) (duration/60) - hours*60;
-        int seconds = (int) (duration) - minutes*60;
+        int hours = (int) (duration/1000/60/60);
+        int minutes = (int) (duration/1000/60) - hours*60;
+        int seconds = (int) (duration/1000) - minutes*60;
         if(hours > 0) {
-            dur += hours + ":";
+            dur += String.format("%0$02d:", hours);
         }
-        dur += minutes + ":";
-        dur += seconds;
+        dur += String.format("%0$02d:%1$02d", minutes, seconds);
         return dur;
     }
 }

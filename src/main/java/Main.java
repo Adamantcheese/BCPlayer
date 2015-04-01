@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import objects.Track;
@@ -22,12 +23,9 @@ public class Main extends Application {
     @Override
     public void start (Stage primaryStage) throws Exception {
         //Start playing the song
-        //Track track = Constants.getTrackHelper().getRandomSong();
-        //PlayerContainer player = new PlayerContainer(track.getTrackURL());
-        //player.playSong();
-        URL track = new URL("http://popplers5.bandcamp.com/download/track?enc=mp3-128&fsig=587c860516a710c87797ce1b6dbf9043&id=968334095&stream=1&ts=1427611386.0");
-        PlayerContainer temp = new PlayerContainer(track);
-        temp.playSong();
+        Track track = Constants.getTrackHelper().getRandomSong();
+        PlayerContainer player = new PlayerContainer(track.getTrackURL());
+        player.playSong();
 
         //Display the window with UI
         Parent root = FXMLLoader.load(Main.class.getResource("ui.fxml"));
@@ -42,19 +40,12 @@ public class Main extends Application {
 
         StackPane sp = new StackPane();
         ImageView imgView = new ImageView(Constants.getDefaultAlbumCover());
+        Text text = new Text(50, 250, player.getCurrentTime() + "/00:00");
         sp.getChildren().add(imgView);
+        sp.getChildren().add(text);
 
         primaryStage.setScene(new Scene(sp, 300, 300));
-
         primaryStage.show();
-
-        temp.togglePause();
-        Thread.sleep(5000);
-
-        temp.togglePause();
-        Thread.sleep(5000);
-
-        temp.stopSong();
     }
 
     public static void main (String[] args) throws Exception {
