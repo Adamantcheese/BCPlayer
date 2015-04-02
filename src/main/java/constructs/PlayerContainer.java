@@ -1,6 +1,5 @@
 package constructs;
 
-import javazoom.jl.decoder.JavaLayerException;
 import objects.PlaybackEvent;
 import objects.PlaybackListener;
 import objects.Player;
@@ -26,23 +25,19 @@ public class PlayerContainer extends Thread {
     }
 
     public void run(){
-        try {
-            player.play();
-        } catch (JavaLayerException e) {
-            return;
-        }
+        player.playSong();
     }
 
     public void playSong() {
         this.start();
     }
 
-    public void togglePause() {
+    public void pauseToggle() {
         player.pauseToggle();
     }
 
     public void stopSong() {
-        player.stop();
+        player.stopSong();
     }
 
     public String getCurrentTime() {
@@ -52,9 +47,9 @@ public class PlayerContainer extends Thread {
         int minutes = (int) (duration/1000/60) - hours*60;
         int seconds = (int) (duration/1000) - minutes*60;
         if(hours > 0) {
-            dur += String.format("%0$02d:", hours);
+            dur += String.format("%02d:", hours);
         }
-        dur += String.format("%0$02d:%1$02d", minutes, seconds);
+        dur += String.format("%02d:%02d", minutes, seconds);
         return dur;
     }
 

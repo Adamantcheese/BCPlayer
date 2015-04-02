@@ -1,110 +1,103 @@
 package objects;
 
-import java.io.InputStream;
-import javazoom.jl.decoder.Bitstream;
-import javazoom.jl.decoder.BitstreamException;
-import javazoom.jl.decoder.Decoder;
-import javazoom.jl.decoder.Header;
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.decoder.SampleBuffer;
+import javazoom.jl.decoder.*;
 import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
 
+import java.io.InputStream;
+
 public class Player {
+    
     private Bitstream bitstream;
     private Decoder decoder;
     private AudioDevice audio;
+
+    private boolean closed;
     private boolean playing;
-    private boolean stop;
     private int lastPosition;
+
     private PlaybackListener listener;
 
     public Player(InputStream stream) throws JavaLayerException {
-        this.playing = false;
-        this.stop = true;
-        this.lastPosition = 0;
+        closed = false;
+        playing = false;
+        lastPosition = 0;
 
-        this.bitstream = new Bitstream(stream);
-        this.decoder = new Decoder();
+        bitstream = new Bitstream(stream);
+        decoder = new Decoder();
 
         FactoryRegistry r = FactoryRegistry.systemRegistry();
-        this.audio = r.createAudioDevice();
-        this.audio.open(this.decoder);
+        audio = r.createAudioDevice();
+        audio.open(decoder);
     }
 
-    public void play() throws JavaLayerException {
-        this.play(Integer.MAX_VALUE);
-    }
-
-    public boolean play(int frames) throws JavaLayerException {
+    private boolean play(int frames) throws JavaLayerException {
         boolean ret = true;
-        this.playing = true;
-        this.stop = false;
+        playing = true;
 
         while(frames-- > 0 && ret) {
-            if (this.stop) {
-                AudioDevice out = this.audio;
-                if(out != null) {
-                    out.flush();
-                    synchronized(this) {
-                        this.close();
-                    }
-
-                    if(this.listener != null) {
-                        this.listener.playbackFinished(this.createEvent(out, PlaybackEvent.STOPPED));
-                    }
-                }
-                return ret;
-            } else if (this.playing) {
+            if(playing) {
                 ret = decodeFrame();
             } else {
-                try {
-                    Thread.sleep(10);
-                } catch (Exception e) {
-
-                }
+                return true;
             }
         }
 
-        AudioDevice out = this.audio;
+        AudioDevice out = audio;
         if(out != null) {
             out.flush();
             synchronized(this) {
-                this.close();
+                close();
             }
 
-            if(this.listener != null) {
-                this.listener.playbackFinished(this.createEvent(out, PlaybackEvent.FINISHED));
+            if(listener != null) {
+                listener.playbackFinished(createEvent(out, PlaybackEvent.FINISHED));
+                listener.playbackFinished(createEvent(out, PlaybackEvent.STOPPED));
             }
         }
-
-        this.playing = false;
-        this.stop = true;
 
         return ret;
     }
 
     public synchronized void close() {
-        AudioDevice out = this.audio;
+        AudioDevice out = audio;
         if(out != null) {
-            this.playing = false;
-            this.stop = true;
-            this.audio = null;
+            closed = true;
+            audio = null;
             out.close();
-            this.lastPosition = out.getPosition();
+            lastPosition = out.getPosition();
 
             try {
-                this.bitstream.close();
+                bitstream.close();
             } catch (BitstreamException var3) {
 
             }
         }
-
     }
 
+    /*protected boolean skipFrame() throws JavaLayerException {
+        Header h = bitstream.readFrame();
+        if(h == null) {
+            return false;
+        } else {
+            bitstream.closeFrame();
+            return true;
+        }
+    }
+
+    public boolean play(int start, int end) throws JavaLayerException {
+        boolean ret = true;
+
+        for(int offset = start; offset-- > 0 && ret; ret = skipFrame()) {
+
+        }
+
+        return play(end - start);
+    }*/
+
     public int getPosition() {
-        int position = this.lastPosition;
-        AudioDevice out = this.audio;
+        int position = lastPosition;
+        AudioDevice out = audio;
         if(out != null) {
             position = out.getPosition();
         }
@@ -112,25 +105,25 @@ public class Player {
         return position;
     }
 
-    protected boolean decodeFrame() throws JavaLayerException {
+    private boolean decodeFrame() throws JavaLayerException {
         try {
-            AudioDevice ex = this.audio;
+            AudioDevice ex = audio;
             if(ex == null) {
                 return false;
             } else {
-                Header h = this.bitstream.readFrame();
+                Header h = bitstream.readFrame();
                 if(h == null) {
                     return false;
                 } else {
-                    SampleBuffer output = (SampleBuffer)this.decoder.decodeFrame(h, this.bitstream);
+                    SampleBuffer output = (SampleBuffer)decoder.decodeFrame(h, bitstream);
                     synchronized(this) {
-                        ex = this.audio;
+                        ex = audio;
                         if(ex != null) {
                             ex.write(output.getBuffer(), 0, output.getBufferLength());
                         }
                     }
 
-                    this.bitstream.closeFrame();
+                    bitstream.closeFrame();
                     return true;
                 }
             }
@@ -140,7 +133,7 @@ public class Player {
     }
 
     private PlaybackEvent createEvent(int id) {
-        return this.createEvent(this.audio, id);
+        return createEvent(audio, id);
     }
 
     private PlaybackEvent createEvent(AudioDevice dev, int id) {
@@ -151,20 +144,42 @@ public class Player {
         this.listener = listener;
     }
 
-    public void pauseToggle() {
-        if(this.playing) {
-            this.listener.playbackPaused(this.createEvent(PlaybackEvent.PAUSED));
-            this.playing = false;
-        } else {
-            this.listener.playbackUnpaused(this.createEvent(PlaybackEvent.UNPAUSED));
-            this.playing = true;
+    private void stop() {
+        listener.playbackFinished(createEvent(PlaybackEvent.STOPPED));
+        close();
+    }
+
+    public void playSong() {
+        try {
+            play(Integer.MAX_VALUE);
+        } catch (JavaLayerException e) {
+            listener.playbackFinished(createEvent(PlaybackEvent.FINISHED));
         }
     }
 
-    public void stop() {
-        if(!this.playing) {
-            this.playing = true;
+    public void pauseToggle() {
+        if(playing) {
+            playing = false;
+            listener.playbackFinished(createEvent(PlaybackEvent.PAUSED));
+        } else {
+            listener.playbackFinished(createEvent(PlaybackEvent.UNPAUSED));
+            playSong();
         }
-        this.stop = true;
+    }
+
+    public void stopSong() {
+        stop();
+    }
+
+    public boolean isPlaying() {
+        return playing;
+    }
+
+    public boolean isPaused() {
+        return !playing;
+    }
+
+    public boolean isFinished() {
+        return closed;
     }
 }
