@@ -58,7 +58,6 @@ public class PlayerContainer extends Thread {
             @Override
             public void playbackFinished (PlaybackEvent evt) {
                 System.out.println("Finished playing song.");
-                playbackStopped(evt);
             }
 
             @Override

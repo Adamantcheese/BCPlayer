@@ -1,4 +1,5 @@
 import constructs.PlayerContainer;
+import constructs.PlayerTester;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -23,9 +24,13 @@ public class Main extends Application {
     @Override
     public void start (Stage primaryStage) throws Exception {
         //Start playing the song
-        Track track = Constants.getTrackHelper().getRandomSong();
-        PlayerContainer player = new PlayerContainer(track.getTrackURL());
-        player.playSong();
+        //Track track = Constants.getTrackHelper().getRandomSong();
+        //PlayerContainer player = new PlayerContainer(track.getTrackURL());
+        //player.playSong();
+
+        PlayerContainer player = new PlayerContainer(new URL("http://popplers5.bandcamp.com/download/track?enc=mp3-128&fsig=073d42f36a880ac9b4ec5590137dd476&id=4078077538&stream=1&ts=1427996072.0"));
+        PlayerTester playerTester = new PlayerTester(player, true);
+        playerTester.start();
 
         //Display the window with UI
         Parent root = FXMLLoader.load(Main.class.getResource("ui.fxml"));

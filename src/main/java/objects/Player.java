@@ -14,6 +14,7 @@ public class Player {
 
     private boolean closed;
     private boolean playing;
+    private boolean stop;
     private int lastPosition;
 
     private PlaybackListener listener;
@@ -21,6 +22,7 @@ public class Player {
     public Player(InputStream stream) throws JavaLayerException {
         closed = false;
         playing = false;
+        stop = false;
         lastPosition = 0;
 
         bitstream = new Bitstream(stream);
@@ -36,10 +38,17 @@ public class Player {
         playing = true;
 
         while(frames-- > 0 && ret) {
-            if(playing) {
+            if (stop) {
+                playing = false;
+                return ret;
+            } else if(playing) {
                 ret = decodeFrame();
             } else {
-                return true;
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    return ret;
+                }
             }
         }
 
@@ -52,7 +61,7 @@ public class Player {
 
             if(listener != null) {
                 listener.playbackFinished(createEvent(out, PlaybackEvent.FINISHED));
-                listener.playbackFinished(createEvent(out, PlaybackEvent.STOPPED));
+                listener.playbackStopped(createEvent(out, PlaybackEvent.STOPPED));
             }
         }
 
@@ -74,26 +83,6 @@ public class Player {
             }
         }
     }
-
-    /*protected boolean skipFrame() throws JavaLayerException {
-        Header h = bitstream.readFrame();
-        if(h == null) {
-            return false;
-        } else {
-            bitstream.closeFrame();
-            return true;
-        }
-    }
-
-    public boolean play(int start, int end) throws JavaLayerException {
-        boolean ret = true;
-
-        for(int offset = start; offset-- > 0 && ret; ret = skipFrame()) {
-
-        }
-
-        return play(end - start);
-    }*/
 
     public int getPosition() {
         int position = lastPosition;
@@ -144,8 +133,12 @@ public class Player {
         this.listener = listener;
     }
 
-    private void stop() {
-        listener.playbackFinished(createEvent(PlaybackEvent.STOPPED));
+    public void stopSong() {
+        if(!playing) {
+            playing = true;
+        }
+        stop = true;
+        listener.playbackStopped(createEvent(PlaybackEvent.STOPPED));
         close();
     }
 
@@ -160,15 +153,11 @@ public class Player {
     public void pauseToggle() {
         if(playing) {
             playing = false;
-            listener.playbackFinished(createEvent(PlaybackEvent.PAUSED));
+            listener.playbackPaused(createEvent(PlaybackEvent.PAUSED));
         } else {
-            listener.playbackFinished(createEvent(PlaybackEvent.UNPAUSED));
-            playSong();
+            playing = true;
+            listener.playbackUnpaused(createEvent(PlaybackEvent.UNPAUSED));
         }
-    }
-
-    public void stopSong() {
-        stop();
     }
 
     public boolean isPlaying() {
