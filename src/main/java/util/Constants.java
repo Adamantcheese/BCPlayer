@@ -41,4 +41,28 @@ public class Constants {
         }
         return DEFAULT_ALBUM_COVER;
     }
+
+    private static Image PLAY_BUTTON = null;
+    public static Image getPlayButton() throws Exception {
+        if (PLAY_BUTTON == null) {
+            PLAY_BUTTON = new Image(Constants.class.getResource("../play.png").toString());
+        }
+        return PLAY_BUTTON;
+    }
+
+    private static Image PAUSE_BUTTON = null;
+    private static Image getPauseButton() throws Exception {
+        if (PAUSE_BUTTON == null) {
+            PAUSE_BUTTON = new Image(Constants.class.getResource("../pause.png").toString());
+        }
+        return PAUSE_BUTTON;
+    }
+
+    private static Image NEXT_BUTTON = null;
+    public static Image getNextButton() throws Exception {
+        if (NEXT_BUTTON == null) {
+            NEXT_BUTTON = new Image(Constants.class.getResource("../next.png").toString());
+        }
+        return NEXT_BUTTON;
+    }
 }

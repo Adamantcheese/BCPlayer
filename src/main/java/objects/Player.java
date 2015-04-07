@@ -138,6 +138,7 @@ public class Player {
             playing = true;
         }
         stop = true;
+        playing = false;
         listener.playbackStopped(createEvent(PlaybackEvent.STOPPED));
         close();
     }
@@ -147,6 +148,7 @@ public class Player {
             play(Integer.MAX_VALUE);
         } catch (JavaLayerException e) {
             listener.playbackFinished(createEvent(PlaybackEvent.FINISHED));
+            stopSong();
         }
     }
 
@@ -161,11 +163,11 @@ public class Player {
     }
 
     public boolean isPlaying() {
-        return playing;
+        return playing && !closed;
     }
 
     public boolean isPaused() {
-        return !playing;
+        return !playing && !closed;
     }
 
     public boolean isFinished() {

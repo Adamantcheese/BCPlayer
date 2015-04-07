@@ -40,6 +40,18 @@ public class PlayerContainer extends Thread {
         player.stopSong();
     }
 
+    public boolean isPlaying() {
+        return player.isPlaying();
+    }
+
+    public boolean isFinished() {
+        return player.isFinished();
+    }
+
+    public boolean isPaused() {
+        return player.isPaused();
+    }
+
     public String getCurrentTime() {
         String dur = "";
         int duration = player.getPosition();

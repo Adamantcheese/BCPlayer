@@ -16,27 +16,16 @@ public class PlayerTester extends Thread {
 
     public void run() {
         player.playSong();
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        player.pauseToggle();
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        player.pauseToggle();
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         if (!testFin) {
             player.stopSong();
         }
+    }
+
+    public boolean isFinished() {
+        return player.isFinished();
+    }
+
+    public boolean isPlaying() {
+        return player.isPlaying();
     }
 }

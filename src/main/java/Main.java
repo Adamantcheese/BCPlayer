@@ -49,8 +49,17 @@ public class Main extends Application {
         sp.getChildren().add(imgView);
         sp.getChildren().add(text);
 
-        primaryStage.setScene(new Scene(sp, 300, 300));
-        primaryStage.show();
+        Scene mainScene = new Scene(sp, 300, 300);
+
+        while(playerTester.isPlaying()) {
+            primaryStage.setScene(mainScene);
+            primaryStage.show();
+            sp.getChildren().remove(text);
+            text.setText(player.getCurrentTime() + "/00:00");
+            sp.getChildren().add(text);
+            Thread.sleep(1000);
+            primaryStage.close();
+        }
     }
 
     public static void main (String[] args) throws Exception {
