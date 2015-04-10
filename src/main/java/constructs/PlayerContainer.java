@@ -19,11 +19,6 @@ public class PlayerContainer extends Thread {
         setupListener();
     }
 
-    public PlayerContainer(URL test) throws Exception {
-        player = new Player(test.openStream());
-        setupListener();
-    }
-
     public void run(){
         player.playSong();
     }

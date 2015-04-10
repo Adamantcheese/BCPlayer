@@ -3,7 +3,7 @@ package constructs;
 import objects.Track;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import util.Constants;
+import boot.Constants;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

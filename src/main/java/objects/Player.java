@@ -15,7 +15,6 @@ public class Player {
     private boolean closed;
     private boolean playing;
     private boolean stop;
-    private int lastPosition;
 
     private PlaybackListener listener;
 
@@ -23,7 +22,6 @@ public class Player {
         closed = false;
         playing = false;
         stop = false;
-        lastPosition = 0;
 
         bitstream = new Bitstream(stream);
         decoder = new Decoder();
@@ -74,7 +72,6 @@ public class Player {
             closed = true;
             audio = null;
             out.close();
-            lastPosition = out.getPosition();
 
             try {
                 bitstream.close();
@@ -85,10 +82,9 @@ public class Player {
     }
 
     public int getPosition() {
-        int position = lastPosition;
-        AudioDevice out = audio;
-        if(out != null) {
-            position = out.getPosition();
+        int position = 0;
+        if(audio != null) {
+            position = audio.getPosition();
         }
 
         return position;

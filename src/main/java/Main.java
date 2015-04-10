@@ -1,22 +1,17 @@
+import boot.Constants;
 import constructs.PlayerContainer;
-import constructs.PlayerTester;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import objects.Track;
 import org.apache.commons.io.FilenameUtils;
 import tools.AlbumListUpdater;
-import util.Constants;
 
 import java.io.PrintWriter;
-import java.net.URL;
 import java.util.Scanner;
 
 public class Main extends Application {
@@ -25,12 +20,8 @@ public class Main extends Application {
     public void start (Stage primaryStage) throws Exception {
         //Start playing the song
         //Track track = Constants.getTrackHelper().getRandomSong();
-        //PlayerContainer player = new PlayerContainer(track.getTrackURL());
+        //PlayerContainer player = new PlayerContainer(track);
         //player.playSong();
-
-        PlayerContainer player = new PlayerContainer(new URL("http://popplers5.bandcamp.com/download/track?enc=mp3-128&fsig=073d42f36a880ac9b4ec5590137dd476&id=4078077538&stream=1&ts=1427996072.0"));
-        PlayerTester playerTester = new PlayerTester(player, true);
-        playerTester.start();
 
         //Display the window with UI
         Parent root = FXMLLoader.load(Main.class.getResource("ui.fxml"));
@@ -43,23 +34,8 @@ public class Main extends Application {
         });
         primaryStage.setResizable(false);
 
-        StackPane sp = new StackPane();
-        ImageView imgView = new ImageView(Constants.getDefaultAlbumCover());
-        Text text = new Text(50, 250, player.getCurrentTime() + "/00:00");
-        sp.getChildren().add(imgView);
-        sp.getChildren().add(text);
-
-        Scene mainScene = new Scene(sp, 300, 300);
-
-        while(playerTester.isPlaying()) {
-            primaryStage.setScene(mainScene);
-            primaryStage.show();
-            sp.getChildren().remove(text);
-            text.setText(player.getCurrentTime() + "/00:00");
-            sp.getChildren().add(text);
-            Thread.sleep(1000);
-            primaryStage.close();
-        }
+        primaryStage.setScene(new Scene(root, 300, 300));
+        primaryStage.show();
     }
 
     public static void main (String[] args) throws Exception {
