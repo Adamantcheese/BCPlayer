@@ -1,6 +1,7 @@
 package boot;
 
 import constructs.TrackContainer;
+import javafx.scene.image.Image;
 
 import java.io.File;
 import java.net.URL;
@@ -40,5 +41,21 @@ public class Constants {
             DEFAULT_COVER = Constants.class.getResource("../default_cover.png");
         }
         return DEFAULT_COVER;
+    }
+
+    private static Image PLAY_BUTTON = null;
+    public static Image getPlayButton() {
+        if(PLAY_BUTTON == null) {
+            PLAY_BUTTON = new Image(Constants.class.getResource("../play.png").toString());
+        }
+        return PLAY_BUTTON;
+    }
+
+    private static Image PAUSE_BUTTON = null;
+    public static Image getPauseButton() {
+        if(PAUSE_BUTTON == null) {
+            PAUSE_BUTTON = new Image(Constants.class.getResource("../pause.png").toString());
+        }
+        return PAUSE_BUTTON;
     }
 }

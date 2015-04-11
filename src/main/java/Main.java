@@ -18,15 +18,6 @@ public class Main extends Application {
 
     @Override
     public void start (Stage primaryStage) throws Exception {
-        //Start playing the song
-        Track track = null;
-        while(track == null || track.getTrackURL() == null) {
-            track = Constants.getTrackHelper().getRandomSong();
-        }
-        PlayerContainer player = new PlayerContainer(track);
-        player.playSong();
-
-        //Display the window with UI
         Parent root = FXMLLoader.load(Main.class.getResource("ui.fxml"));
         primaryStage.setTitle("Bandcamp Player");
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -39,6 +30,16 @@ public class Main extends Application {
 
         primaryStage.setScene(new Scene(root, 300, 300));
         primaryStage.show();
+    }
+
+    public static void writeTrackFile() throws Exception {
+        Scanner tempScanner = new Scanner(Constants.getInternalTrackFile());
+        PrintWriter tempWriter = new PrintWriter(Constants.TRACK_FILE);
+        while (tempScanner.hasNextLine()) {
+            tempWriter.println(tempScanner.nextLine());
+        }
+        tempScanner.close();
+        tempWriter.close();
     }
 
     public static void main (String[] args) throws Exception {
@@ -58,18 +59,12 @@ public class Main extends Application {
                     ans = keyboard.nextLine().toLowerCase();
                 }
                 if(ans.equals("n")) {
-                    return;
+                    writeTrackFile();
                 } else {
                     AlbumListUpdater.update(args[0]);
                 }
             } else {
-                Scanner tempScanner = new Scanner(Constants.getInternalTrackFile());
-                PrintWriter tempWriter = new PrintWriter(Constants.TRACK_FILE);
-                while (tempScanner.hasNextLine()) {
-                    tempWriter.println(tempScanner.nextLine());
-                }
-                tempScanner.close();
-                tempWriter.close();
+                writeTrackFile();
             }
         }
 

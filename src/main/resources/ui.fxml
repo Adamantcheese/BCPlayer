@@ -6,9 +6,9 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane alignment="BOTTOM_CENTER" maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="300.0" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane alignment="BOTTOM_CENTER" maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="300.0" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="boot.Controller">
    <children>
-      <ImageView fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="albumArt" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@default_cover.png" />
          </image></ImageView>
@@ -16,7 +16,7 @@
          <children>
             <VBox alignment="CENTER" maxHeight="50.0" maxWidth="100.0" minHeight="50.0" minWidth="100.0" prefHeight="50.0" prefWidth="100.0">
                <children>
-                  <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Arist Name&#10;Track Name&#10;00:00/00:00" textAlignment="CENTER" />
+                  <Text fx:id="info" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Arist Name&#10;Track Name&#10;00:00/00:00" textAlignment="CENTER" />
                </children>
             </VBox>
          </children>
@@ -26,11 +26,11 @@
       </HBox>
       <VBox alignment="BOTTOM_LEFT" prefHeight="300.0" prefWidth="0.0">
          <children>
-            <Button ellipsisString="" mnemonicParsing="false">
+            <Button fx:id="playPause" ellipsisString="" mnemonicParsing="false">
                <graphic>
-                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="playPauseIcon" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@play.png" />
+                        <Image url="@pause.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -42,7 +42,7 @@
       </VBox>
       <VBox alignment="BOTTOM_RIGHT" prefHeight="35.0" prefWidth="35.0">
          <children>
-            <Button ellipsisString="" mnemonicParsing="false">
+            <Button fx:id="next" ellipsisString="" mnemonicParsing="false">
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                      <image>
