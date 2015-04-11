@@ -1,60 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane alignment="BOTTOM_CENTER" maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="300.0" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="boot.Controller">
+<StackPane maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="300.0" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="boot.Controller">
    <children>
-      <ImageView fx:id="albumArt" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="albumArt" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="false">
          <image>
             <Image url="@default_cover.png" />
          </image></ImageView>
-      <HBox alignment="BOTTOM_CENTER">
+      <Rectangle fill="BLACK" height="62.0" width="300.0">
+         <StackPane.margin>
+            <Insets top="237.0" />
+         </StackPane.margin></Rectangle>
+      <HBox alignment="CENTER">
          <children>
-            <VBox alignment="CENTER" maxHeight="50.0" maxWidth="100.0" minHeight="50.0" minWidth="100.0" prefHeight="50.0" prefWidth="100.0">
+            <VBox alignment="BOTTOM_LEFT" prefHeight="300.0" prefWidth="0.0">
+               <children>
+                  <Button ellipsisString="" mnemonicParsing="false" onAction="#playPause">
+                     <graphic>
+                        <ImageView fx:id="playPauseIcon" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@pause.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" />
+               </padding>
+            </VBox>
+            <HBox alignment="BOTTOM_CENTER">
                <children>
                   <Text fx:id="info" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Arist Name&#10;Track Name&#10;00:00/00:00" textAlignment="CENTER" />
                </children>
+               <padding>
+                  <Insets bottom="10.0" left="50.0" right="50.0" />
+               </padding>
+            </HBox>
+            <VBox alignment="BOTTOM_RIGHT" prefHeight="35.0" prefWidth="35.0">
+               <children>
+                  <Button ellipsisString="" mnemonicParsing="false" onAction="#playNext">
+                     <graphic>
+                        <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@next.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" right="10.0" />
+               </padding>
             </VBox>
          </children>
-         <padding>
-            <Insets bottom="10.0" left="50.0" right="50.0" />
-         </padding>
       </HBox>
-      <VBox alignment="BOTTOM_LEFT" prefHeight="300.0" prefWidth="0.0">
-         <children>
-            <Button fx:id="playPause" ellipsisString="" mnemonicParsing="false">
-               <graphic>
-                  <ImageView fx:id="playPauseIcon" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@pause.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-         </children>
-         <padding>
-            <Insets bottom="10.0" left="10.0" />
-         </padding>
-      </VBox>
-      <VBox alignment="BOTTOM_RIGHT" prefHeight="35.0" prefWidth="35.0">
-         <children>
-            <Button fx:id="next" ellipsisString="" mnemonicParsing="false">
-               <graphic>
-                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@next.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-         </children>
-         <padding>
-            <Insets bottom="10.0" right="10.0" />
-         </padding>
-      </VBox>
    </children>
 </StackPane>

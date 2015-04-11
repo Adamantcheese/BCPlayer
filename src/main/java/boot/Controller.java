@@ -2,6 +2,7 @@ package boot;
 
 import constructs.PlayerContainer;
 import javafx.event.*;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -13,8 +14,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
-    public Button playPause;
-    public Button next;
     public Text info;
     public ImageView playPauseIcon;
     public ImageView albumArt;
@@ -22,7 +21,8 @@ public class Controller implements Initializable {
     private Track curTrack;
     private PlayerContainer playerContainer;
 
-    private void pauseToggle() {
+    @FXML
+    private void playPause() {
         playerContainer.pauseToggle();
         if(playerContainer.isPlaying()) {
             playPauseIcon.setImage(Constants.getPauseButton());
@@ -31,11 +31,12 @@ public class Controller implements Initializable {
         }
     }
 
+    @FXML
     private void playNext() {
         playerContainer.stopSong();
         playerContainer = null;
         while (playerContainer == null) {
-            getNextSong();
+            setNextSong();
         }
         albumArt.setImage(new Image(curTrack.getArtURL().toString()));
         playerContainer.playSong();
@@ -43,31 +44,15 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize (URL location, ResourceBundle resources) {
-        //Initialize the handlers
-        playPause.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle (ActionEvent event) {
-                pauseToggle();
-            }
-        });
-
-        next.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle (ActionEvent event) {
-                playNext();
-            }
-        });
-
-        //Play the first song
         playerContainer = null;
         while (playerContainer == null) {
-            getNextSong();
+            setNextSong();
         }
         albumArt.setImage(new Image(curTrack.getArtURL().toString()));
         playerContainer.playSong();
     }
 
-    private void getNextSong() {
+    private void setNextSong() {
         curTrack = null;
         while(curTrack == null || curTrack.getTrackURL() == null) {
             try {
