@@ -19,9 +19,12 @@ public class Main extends Application {
     @Override
     public void start (Stage primaryStage) throws Exception {
         //Start playing the song
-        //Track track = Constants.getTrackHelper().getRandomSong();
-        //PlayerContainer player = new PlayerContainer(track);
-        //player.playSong();
+        Track track = null;
+        while(track == null || track.getTrackURL() == null) {
+            track = Constants.getTrackHelper().getRandomSong();
+        }
+        PlayerContainer player = new PlayerContainer(track);
+        player.playSong();
 
         //Display the window with UI
         Parent root = FXMLLoader.load(Main.class.getResource("ui.fxml"));

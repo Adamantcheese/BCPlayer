@@ -1,9 +1,9 @@
 package boot;
 
 import constructs.TrackContainer;
-import javafx.scene.image.Image;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Random;
 
 /**
@@ -32,5 +32,13 @@ public class Constants {
             TRACK_HELPER = new TrackContainer();
         }
         return TRACK_HELPER;
+    }
+
+    private static URL DEFAULT_COVER = null;
+    public static URL getDefaultCover() {
+        if(DEFAULT_COVER == null) {
+            DEFAULT_COVER = Constants.class.getResource("../default_cover.png");
+        }
+        return DEFAULT_COVER;
     }
 }

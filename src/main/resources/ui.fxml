@@ -1,17 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane alignment="BOTTOM_CENTER" maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="300.0" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8">
+<StackPane alignment="BOTTOM_CENTER" maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="300.0" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ImageView fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@default_cover.png" />
          </image></ImageView>
-      <VBox alignment="BOTTOM_LEFT" prefHeight="35.0" prefWidth="35.0">
+      <HBox alignment="BOTTOM_CENTER">
+         <children>
+            <VBox alignment="CENTER" maxHeight="50.0" maxWidth="100.0" minHeight="50.0" minWidth="100.0" prefHeight="50.0" prefWidth="100.0">
+               <children>
+                  <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Arist Name&#10;Track Name&#10;00:00/00:00" textAlignment="CENTER" />
+               </children>
+            </VBox>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="50.0" right="50.0" />
+         </padding>
+      </HBox>
+      <VBox alignment="BOTTOM_LEFT" prefHeight="300.0" prefWidth="0.0">
          <children>
             <Button ellipsisString="" mnemonicParsing="false">
                <graphic>
@@ -23,11 +36,9 @@
                </graphic>
             </Button>
          </children>
-      </VBox>
-      <VBox alignment="CENTER" maxHeight="50.0" maxWidth="100.0" minHeight="50.0" minWidth="100.0" prefHeight="50.0" prefWidth="100.0">
-         <children>
-            <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="00:00/00:00" />
-         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" />
+         </padding>
       </VBox>
       <VBox alignment="BOTTOM_RIGHT" prefHeight="35.0" prefWidth="35.0">
          <children>
@@ -41,6 +52,9 @@
                </graphic>
             </Button>
          </children>
+         <padding>
+            <Insets bottom="10.0" right="10.0" />
+         </padding>
       </VBox>
    </children>
 </StackPane>

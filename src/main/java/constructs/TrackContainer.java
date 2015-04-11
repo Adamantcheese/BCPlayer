@@ -4,6 +4,8 @@ import objects.Track;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import boot.Constants;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -57,7 +59,19 @@ public class TrackContainer {
         } while (doc == null);
 
         //Get the script
-        String script = doc.select("script").get(8).html();
+        String script = null;
+        Elements scripts = doc.select("script");
+        for(Element s : scripts) {
+            String sHtml = s.html();
+            if(sHtml.contains("\"mp3-128\"")) {
+                script = sHtml;
+            }
+        }
+
+        //If we couldn't find the script, there are no songs on this page
+        if(script == null) {
+            return null;
+        }
 
         //Setup the matchers for grabbing data
         Matcher trackNameMatcher = TRACK_NAME.matcher(script);
@@ -67,35 +81,57 @@ public class TrackContainer {
         Matcher mp3URLMatcher = MP3_URL.matcher(script);
 
         //Get the right strings from the matchers
-        String trackName = trackNameMatcher.group();
-        trackName = trackName.substring(8, trackName.length() - 6);
-
-        String artistName = artistNameMatcher.group();
-        artistName = artistName.substring(8, artistName.length() - 2);
-
-        String duration = durationMatcher.group();
-        duration = duration.substring(10, duration.length() - 1);
-        double dur = Double.parseDouble(duration);
-
-        String artURL = artURLMatcher.group();
-        artURL = artURL.substring(16, artURL.length() - 2);
-        URL art = null;
-        try {
-            art = new URL(artURL);
-        } catch (MalformedURLException e) {
-            art = null;
+        String trackName;
+        if(trackNameMatcher.find()) {
+            trackName = trackNameMatcher.group();
+            trackName = trackName.substring(9, trackName.length() - 6);
+        } else {
+            trackName = "N/A";
         }
 
-        String mp3URL = mp3URLMatcher.group();
-        mp3URL = mp3URL.substring(11, mp3URL.length() - 1);
-        URL mp3 = null;
-        try {
-            mp3 = new URL(mp3URL);
-        } catch (MalformedURLException e) {
+        String artistName;
+        if(artistNameMatcher.find()) {
+            artistName = artistNameMatcher.group();
+            artistName = artistName.substring(9, artistName.length() - 2);
+        } else {
+            artistName = "N/A";
+        }
+
+        double dur;
+        if(durationMatcher.find()) {
+            String duration = durationMatcher.group();
+            duration = duration.substring(11, duration.length() - 1);
+            dur = Double.parseDouble(duration);
+        } else {
+            dur = 0.0;
+        }
+
+        URL art;
+        if(artURLMatcher.find()) {
+            String artURL = artURLMatcher.group();
+            artURL = artURL.substring(17, artURL.length() - 2);
+            try {
+                art = new URL(artURL);
+            } catch (MalformedURLException e) {
+                art = Constants.getDefaultCover();
+            }
+        } else {
+            art = Constants.getDefaultCover();
+        }
+
+        URL mp3;
+        if(mp3URLMatcher.find()) {
+            String mp3URL = mp3URLMatcher.group();
+            mp3URL = mp3URL.substring(11, mp3URL.length() - 1);
+            try {
+                mp3 = new URL(mp3URL);
+            } catch (MalformedURLException e) {
+                mp3 = null;
+            }
+        } else {
             mp3 = null;
         }
 
-        System.out.println("pausing line");
         //Construct and return the Track object
         return new Track(trackName, artistName, dur, art, mp3);
     }
