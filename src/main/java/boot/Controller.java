@@ -3,21 +3,22 @@ package boot;
 import constructs.PlayerContainer;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.text.Text;
 import objects.Track;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
-    public Text info;
+    public Label info;
     public ImageView playPauseIcon;
     public ImageView albumArt;
 
     private Track curTrack;
     private PlayerContainer playerContainer;
+    private InfoWatcher infoWatcher;
 
     @FXML
     private void playPause() {
@@ -31,14 +32,14 @@ public class Controller implements Initializable {
 
     @FXML
     private void playNext() {
-        synchronized (this) {
-            playerContainer.stopSong();
-            do {
-                setNextSong();
-            } while (playerContainer == null);
-        }
+        playerContainer.stopSong();
+        do {
+            setNextSong();
+        } while (playerContainer == null);
         albumArt.setImage(new Image(curTrack.getArtURL().toString()));
+        infoWatcher.stop();
         playerContainer.playSong();
+        infoWatcher = new InfoWatcher();
     }
 
     @Override
@@ -49,7 +50,7 @@ public class Controller implements Initializable {
         }
         albumArt.setImage(new Image(curTrack.getArtURL().toString()));
         playerContainer.playSong();
-        InfoWatcher watcher = new InfoWatcher();
+        infoWatcher = new InfoWatcher();
     }
 
     private void setNextSong() {
@@ -74,12 +75,10 @@ public class Controller implements Initializable {
         }
 
         public void run() {
-            while(true) {
+            while(!playerContainer.isFinished()) {
                 info.setText(curTrack.getArtist() + '\n' + curTrack.getTrackName() + '\n' + playerContainer.getCurrentTime() + '/' + curTrack.getDuration());
-                if (playerContainer.isFinished()) {
-                    playNext();
-                }
             }
+            playNext();
         }
     }
 }

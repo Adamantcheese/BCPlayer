@@ -130,12 +130,14 @@ public class Player {
     }
 
     public void stopSong() {
-        if(!playing) {
+        if (!playing) {
             playing = true;
         }
         stop = true;
         playing = false;
-        listener.playbackStopped(createEvent(PlaybackEvent.STOPPED));
+        if (!closed) {
+            listener.playbackStopped(createEvent(PlaybackEvent.STOPPED));
+        }
         close();
     }
 

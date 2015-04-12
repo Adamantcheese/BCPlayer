@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -14,49 +15,37 @@
             <Image url="@default_cover.png" />
          </image>
       </ImageView>
-      <HBox alignment="CENTER">
+      <Button ellipsisString="" mnemonicParsing="false" onAction="#playPause" StackPane.alignment="BOTTOM_LEFT">
+         <graphic>
+            <ImageView fx:id="playPauseIcon" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@pause.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <StackPane.margin>
+            <Insets bottom="10.0" left="10.0" />
+         </StackPane.margin>
+      </Button>
+      <Button ellipsisString="" mnemonicParsing="false" onAction="#playNext" StackPane.alignment="BOTTOM_RIGHT">
+         <graphic>
+            <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@next.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <StackPane.margin>
+            <Insets bottom="10.0" right="10.0" />
+         </StackPane.margin>
+      </Button>
+      <HBox alignment="BOTTOM_CENTER" StackPane.alignment="CENTER">
          <children>
-            <VBox alignment="BOTTOM_LEFT" prefHeight="300.0" prefWidth="0.0">
-               <children>
-                  <Button ellipsisString="" mnemonicParsing="false" onAction="#playPause">
-                     <graphic>
-                        <ImageView fx:id="playPauseIcon" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@pause.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-               </children>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" />
-               </padding>
-            </VBox>
-            <HBox alignment="BOTTOM_CENTER">
-               <children>
-                  <Text fx:id="info" fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Arist Name&#10;Track Name&#10;00:00/00:00" textAlignment="CENTER" />
-               </children>
-               <padding>
-                  <Insets bottom="10.0" left="50.0" right="50.0" />
-               </padding>
-            </HBox>
-            <VBox alignment="BOTTOM_RIGHT" prefHeight="35.0" prefWidth="35.0">
-               <children>
-                  <Button ellipsisString="" mnemonicParsing="false" onAction="#playNext">
-                     <graphic>
-                        <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@next.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-               </children>
-               <padding>
-                  <Insets bottom="10.0" right="10.0" />
-               </padding>
-            </VBox>
+            <Label fx:id="info" text="Arist Name&#10;Track Name&#10;00:00/00:00" textAlignment="CENTER" HBox.hgrow="NEVER" ellipsisString="..." wrapText="false"/>
          </children>
+         <StackPane.margin>
+            <Insets bottom="5.0" left="60.0" right="60.0" top="245.0" />
+         </StackPane.margin>
       </HBox>
    </children>
 </StackPane>
