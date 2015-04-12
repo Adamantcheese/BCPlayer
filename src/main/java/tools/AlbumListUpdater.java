@@ -50,7 +50,9 @@ public class AlbumListUpdater {
         //Expand URLs if needed
         while (albumScanner.hasNextLine()) {
             String URL = albumScanner.nextLine();
-            if (URL.contains("track")) {
+            if(URL.contains("soundcloud.com")) {
+                continue;
+            } else if (URL.contains("track")) {
                 trackList.add(URL);
             } else if (URL.contains("album")) {
                 Document doc = null;
@@ -165,6 +167,10 @@ public class AlbumListUpdater {
         albumScanner.close();
 
         //Write the expanded version of the file back
+        if (!Constants.BASE_DIR.exists()) {
+            Constants.BASE_DIR.mkdirs();
+        }
+
         PrintWriter albumWriter = new PrintWriter(Constants.TRACK_FILE);
         for (int i = 0; i < trackList.size(); i++) {
             albumWriter.print(trackList.get(i));

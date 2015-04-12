@@ -1,7 +1,7 @@
 x javafx for display
 x jsoup
 x jlayer for media
-jsmooth for deployment
+x jsmooth for deployment
 
 LINKS:
 http://www.javazoom.net/javalayer/docs/docs1.0/index.html
