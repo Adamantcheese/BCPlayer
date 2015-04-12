@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.shape.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
@@ -39,12 +36,12 @@
             <Insets bottom="10.0" right="10.0" />
          </StackPane.margin>
       </Button>
-      <HBox alignment="BOTTOM_CENTER" StackPane.alignment="CENTER">
+      <HBox alignment="CENTER" StackPane.alignment="CENTER">
          <children>
-            <Label fx:id="info" text="Arist Name&#10;Track Name&#10;00:00/00:00" textAlignment="CENTER" HBox.hgrow="NEVER" ellipsisString="..." wrapText="false"/>
+            <Label fx:id="info" ellipsisString="..." text="Arist Name&#10;Track Name&#10;00:00/00:00" textAlignment="CENTER" wrapText="false" HBox.hgrow="NEVER" />
          </children>
          <StackPane.margin>
-            <Insets bottom="5.0" left="60.0" right="60.0" top="245.0" />
+            <Insets bottom="5.0" left="65.0" right="65.0" top="245.0" />
          </StackPane.margin>
       </HBox>
    </children>

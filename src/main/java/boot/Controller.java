@@ -1,6 +1,7 @@
 package boot;
 
 import constructs.PlayerContainer;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -32,12 +33,11 @@ public class Controller implements Initializable {
 
     @FXML
     private void playNext() {
-        playerContainer.stopSong();
+        infoWatcher.skip();
         do {
             setNextSong();
         } while (playerContainer == null);
         albumArt.setImage(new Image(curTrack.getArtURL().toString()));
-        infoWatcher.stop();
         playerContainer.playSong();
         infoWatcher = new InfoWatcher();
     }
@@ -54,14 +54,13 @@ public class Controller implements Initializable {
     }
 
     private void setNextSong() {
-        curTrack = null;
-        while (curTrack == null || curTrack.getTrackURL() == null) {
+        do {
             try {
                 curTrack = Constants.getTrackHelper().getRandomSong();
             } catch (Exception e) {
                 curTrack = null;
             }
-        }
+        } while (curTrack == null || curTrack.getTrackURL() == null);
         try {
             playerContainer = new PlayerContainer(curTrack);
         } catch (Exception e) {
@@ -70,15 +69,36 @@ public class Controller implements Initializable {
     }
 
     private class InfoWatcher extends Thread {
+        private boolean skip;
+
         public InfoWatcher() {
+            skip = false;
             this.start();
         }
 
         public void run() {
-            while(!playerContainer.isFinished()) {
-                info.setText(curTrack.getArtist() + '\n' + curTrack.getTrackName() + '\n' + playerContainer.getCurrentTime() + '/' + curTrack.getDuration());
+            PlayerContainer p = playerContainer;
+            while(!p.isFinished() && !skip) {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run () {
+                        info.setText(curTrack.getArtist() + '\n' + curTrack.getTrackName() + '\n' + playerContainer.getCurrentTime() + '/' + curTrack.getDuration());
+                    }
+                });
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            playNext();
+            p.stopSong();
+            if(!skip) {
+                playNext();
+            }
+        }
+
+        public void skip() {
+            skip = true;
         }
     }
 }
