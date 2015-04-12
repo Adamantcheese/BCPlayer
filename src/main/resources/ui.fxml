@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
@@ -12,7 +13,8 @@
             <Image url="@default_cover.png" />
          </image>
       </ImageView>
-      <Button ellipsisString="" mnemonicParsing="false" onAction="#playPause" StackPane.alignment="BOTTOM_LEFT">
+      <Rectangle fill="WHITE" opacity="0.85" height="65.0" width="300.0" StackPane.alignment="BOTTOM_CENTER" />
+      <Button ellipsisString="" mnemonicParsing="false" onAction="#playPause" style="-fx-focus-color: transparent; -fx-background-color: transparent;" StackPane.alignment="BOTTOM_LEFT">
          <graphic>
             <ImageView fx:id="playPauseIcon" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -24,7 +26,7 @@
             <Insets bottom="10.0" left="10.0" />
          </StackPane.margin>
       </Button>
-      <Button ellipsisString="" mnemonicParsing="false" onAction="#playNext" StackPane.alignment="BOTTOM_RIGHT">
+      <Button ellipsisString="" mnemonicParsing="false" onAction="#playNext" style="-fx-focus-color: transparent; -fx-background-color: transparent;" StackPane.alignment="BOTTOM_RIGHT">
          <graphic>
             <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -38,7 +40,7 @@
       </Button>
       <HBox alignment="CENTER" StackPane.alignment="CENTER">
          <children>
-            <Label fx:id="info" ellipsisString="..." text="Arist Name&#10;Track Name&#10;00:00/00:00" textAlignment="CENTER" wrapText="false" HBox.hgrow="NEVER" />
+            <Label fx:id="info" ellipsisString="..." text="Arist Name&#10;Track Name&#10;00:00/00:00" textAlignment="CENTER" textFill="black" HBox.hgrow="NEVER" />
          </children>
          <StackPane.margin>
             <Insets bottom="5.0" left="65.0" right="65.0" top="245.0" />

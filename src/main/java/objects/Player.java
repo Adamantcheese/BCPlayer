@@ -7,7 +7,7 @@ import javazoom.jl.player.FactoryRegistry;
 import java.io.InputStream;
 
 public class Player {
-    
+
     private Bitstream bitstream;
     private Decoder decoder;
     private AudioDevice audio;
@@ -16,9 +16,7 @@ public class Player {
     private boolean playing;
     private boolean stop;
 
-    private PlaybackListener listener;
-
-    public Player(InputStream stream) throws JavaLayerException {
+    public Player (InputStream stream) throws JavaLayerException {
         closed = false;
         playing = false;
         stop = false;
@@ -31,15 +29,15 @@ public class Player {
         audio.open(decoder);
     }
 
-    private boolean play(int frames) throws JavaLayerException {
+    private boolean play (int frames) throws JavaLayerException {
         boolean ret = true;
         playing = true;
 
-        while(frames-- > 0 && ret) {
+        while (frames-- > 0 && ret) {
             if (stop) {
                 playing = false;
                 return ret;
-            } else if(playing) {
+            } else if (playing) {
                 ret = decodeFrame();
             } else {
                 try {
@@ -51,24 +49,19 @@ public class Player {
         }
 
         AudioDevice out = audio;
-        if(out != null) {
+        if (out != null) {
             out.flush();
-            synchronized(this) {
+            synchronized (this) {
                 close();
-            }
-
-            if(listener != null) {
-                listener.playbackFinished(createEvent(out, PlaybackEvent.FINISHED));
-                listener.playbackStopped(createEvent(out, PlaybackEvent.STOPPED));
             }
         }
 
         return ret;
     }
 
-    public synchronized void close() {
+    public synchronized void close () {
         AudioDevice out = audio;
-        if(out != null) {
+        if (out != null) {
             closed = true;
             audio = null;
             out.close();
@@ -81,29 +74,29 @@ public class Player {
         }
     }
 
-    public int getPosition() {
+    public int getPosition () {
         int position = 0;
-        if(audio != null) {
+        if (audio != null) {
             position = audio.getPosition();
         }
 
         return position;
     }
 
-    private boolean decodeFrame() throws JavaLayerException {
+    private boolean decodeFrame () throws JavaLayerException {
         try {
             AudioDevice ex = audio;
-            if(ex == null) {
+            if (ex == null) {
                 return false;
             } else {
                 Header h = bitstream.readFrame();
-                if(h == null) {
+                if (h == null) {
                     return false;
                 } else {
-                    SampleBuffer output = (SampleBuffer)decoder.decodeFrame(h, bitstream);
-                    synchronized(this) {
+                    SampleBuffer output = (SampleBuffer) decoder.decodeFrame(h, bitstream);
+                    synchronized (this) {
                         ex = audio;
-                        if(ex != null) {
+                        if (ex != null) {
                             ex.write(output.getBuffer(), 0, output.getBufferLength());
                         }
                     }
@@ -117,58 +110,40 @@ public class Player {
         }
     }
 
-    private PlaybackEvent createEvent(int id) {
-        return createEvent(audio, id);
-    }
-
-    private PlaybackEvent createEvent(AudioDevice dev, int id) {
-        return new PlaybackEvent(this, id, dev.getPosition());
-    }
-
-    public void setPlayBackListener(PlaybackListener listener) {
-        this.listener = listener;
-    }
-
-    public void stopSong() {
+    public void stopSong () {
         if (!playing) {
             playing = true;
         }
         stop = true;
         playing = false;
-        if (!closed) {
-            listener.playbackStopped(createEvent(PlaybackEvent.STOPPED));
-        }
         close();
     }
 
-    public void playSong() {
+    public void playSong () {
         try {
             play(Integer.MAX_VALUE);
         } catch (JavaLayerException e) {
-            listener.playbackFinished(createEvent(PlaybackEvent.FINISHED));
             stopSong();
         }
     }
 
-    public void pauseToggle() {
-        if(playing) {
+    public void pauseToggle () {
+        if (playing) {
             playing = false;
-            listener.playbackPaused(createEvent(PlaybackEvent.PAUSED));
         } else {
             playing = true;
-            listener.playbackUnpaused(createEvent(PlaybackEvent.UNPAUSED));
         }
     }
 
-    public boolean isPlaying() {
+    public boolean isPlaying () {
         return playing && !closed;
     }
 
-    public boolean isPaused() {
+    public boolean isPaused () {
         return !playing && !closed;
     }
 
-    public boolean isFinished() {
+    public boolean isFinished () {
         return closed;
     }
 }

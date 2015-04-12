@@ -22,9 +22,9 @@ public class Controller implements Initializable {
     private InfoWatcher infoWatcher;
 
     @FXML
-    private void playPause() {
+    private void playPause () {
         playerContainer.pauseToggle();
-        if(playerContainer.isPlaying()) {
+        if (playerContainer.isPlaying()) {
             playPauseIcon.setImage(Constants.getPauseButton());
         } else if (playerContainer.isPaused()) {
             playPauseIcon.setImage(Constants.getPlayButton());
@@ -32,7 +32,7 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    private void playNext() {
+    private void playNext () {
         infoWatcher.skip();
         do {
             setNextSong();
@@ -53,7 +53,7 @@ public class Controller implements Initializable {
         infoWatcher = new InfoWatcher();
     }
 
-    private void setNextSong() {
+    private void setNextSong () {
         do {
             try {
                 curTrack = Constants.getTrackHelper().getRandomSong();
@@ -71,20 +71,22 @@ public class Controller implements Initializable {
     private class InfoWatcher extends Thread {
         private boolean skip;
 
-        public InfoWatcher() {
+        public InfoWatcher () {
             skip = false;
             this.start();
         }
 
-        public void run() {
+        public void run () {
             PlayerContainer p = playerContainer;
-            while(!p.isFinished() && !skip) {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run () {
-                        info.setText(curTrack.getArtist() + '\n' + curTrack.getTrackName() + '\n' + playerContainer.getCurrentTime() + '/' + curTrack.getDuration());
-                    }
-                });
+            while (!p.isFinished() && !skip) {
+                if (!p.isPaused()) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run () {
+                            info.setText(curTrack.getArtist() + '\n' + curTrack.getTrackName() + '\n' + playerContainer.getCurrentTime() + '/' + curTrack.getDuration());
+                        }
+                    });
+                }
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -92,12 +94,12 @@ public class Controller implements Initializable {
                 }
             }
             p.stopSong();
-            if(!skip) {
+            if (!skip) {
                 playNext();
             }
         }
 
-        public void skip() {
+        public void skip () {
             skip = true;
         }
     }

@@ -1,9 +1,9 @@
 package constructs;
 
+import boot.Constants;
 import objects.Track;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import boot.Constants;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -29,7 +29,7 @@ public class TrackContainer {
     private final Pattern ART_URL = Pattern.compile("artFullsizeUrl: \".*?\",");
     private final Pattern MP3_URL = Pattern.compile("\"mp3-128\":\".*?\"");
 
-    public TrackContainer() throws Exception {
+    public TrackContainer () throws Exception {
         //Init the album list
         TRACK_LIST = new ArrayList<String>(15000);
 
@@ -61,15 +61,15 @@ public class TrackContainer {
         //Get the script
         String script = null;
         Elements scripts = doc.select("script");
-        for(Element s : scripts) {
+        for (Element s : scripts) {
             String sHtml = s.html();
-            if(sHtml.contains("\"mp3-128\"")) {
+            if (sHtml.contains("\"mp3-128\"")) {
                 script = sHtml;
             }
         }
 
         //If we couldn't find the script, there are no songs on this page
-        if(script == null) {
+        if (script == null) {
             return null;
         }
 
@@ -82,7 +82,7 @@ public class TrackContainer {
 
         //Get the right strings from the matchers
         String trackName;
-        if(trackNameMatcher.find()) {
+        if (trackNameMatcher.find()) {
             trackName = trackNameMatcher.group();
             trackName = trackName.substring(9, trackName.length() - 6);
         } else {
@@ -90,7 +90,7 @@ public class TrackContainer {
         }
 
         String artistName;
-        if(artistNameMatcher.find()) {
+        if (artistNameMatcher.find()) {
             artistName = artistNameMatcher.group();
             artistName = artistName.substring(9, artistName.length() - 2);
         } else {
@@ -98,7 +98,7 @@ public class TrackContainer {
         }
 
         double dur;
-        if(durationMatcher.find()) {
+        if (durationMatcher.find()) {
             String duration = durationMatcher.group();
             duration = duration.substring(11, duration.length() - 1);
             dur = Double.parseDouble(duration);
@@ -107,9 +107,9 @@ public class TrackContainer {
         }
 
         URL art;
-        if(artURLMatcher.find()) {
+        if (artURLMatcher.find()) {
             String artURL = artURLMatcher.group();
-            artURL = artURL.substring(17, artURL.length() - 2);
+            artURL = artURL.substring(17, artURL.length() - 2).replace("https", "http");
             try {
                 art = new URL(artURL);
             } catch (MalformedURLException e) {
@@ -120,9 +120,9 @@ public class TrackContainer {
         }
 
         URL mp3;
-        if(mp3URLMatcher.find()) {
+        if (mp3URLMatcher.find()) {
             String mp3URL = mp3URLMatcher.group();
-            mp3URL = mp3URL.substring(11, mp3URL.length() - 1);
+            mp3URL = mp3URL.substring(11, mp3URL.length() - 1).replace("https", "http");
             try {
                 mp3 = new URL(mp3URL);
             } catch (MalformedURLException e) {
