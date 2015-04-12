@@ -1,10 +1,8 @@
 package boot;
 
 import constructs.PlayerContainer;
-import javafx.event.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
@@ -33,10 +31,11 @@ public class Controller implements Initializable {
 
     @FXML
     private void playNext() {
-        playerContainer.stopSong();
-        playerContainer = null;
-        while (playerContainer == null) {
-            setNextSong();
+        synchronized (this) {
+            playerContainer.stopSong();
+            do {
+                setNextSong();
+            } while (playerContainer == null);
         }
         albumArt.setImage(new Image(curTrack.getArtURL().toString()));
         playerContainer.playSong();
@@ -50,11 +49,12 @@ public class Controller implements Initializable {
         }
         albumArt.setImage(new Image(curTrack.getArtURL().toString()));
         playerContainer.playSong();
+        InfoWatcher watcher = new InfoWatcher();
     }
 
     private void setNextSong() {
         curTrack = null;
-        while(curTrack == null || curTrack.getTrackURL() == null) {
+        while (curTrack == null || curTrack.getTrackURL() == null) {
             try {
                 curTrack = Constants.getTrackHelper().getRandomSong();
             } catch (Exception e) {
@@ -65,6 +65,21 @@ public class Controller implements Initializable {
             playerContainer = new PlayerContainer(curTrack);
         } catch (Exception e) {
             playerContainer = null;
+        }
+    }
+
+    private class InfoWatcher extends Thread {
+        public InfoWatcher() {
+            this.start();
+        }
+
+        public void run() {
+            while(true) {
+                info.setText(curTrack.getArtist() + '\n' + curTrack.getTrackName() + '\n' + playerContainer.getCurrentTime() + '/' + curTrack.getDuration());
+                if (playerContainer.isFinished()) {
+                    playNext();
+                }
+            }
         }
     }
 }

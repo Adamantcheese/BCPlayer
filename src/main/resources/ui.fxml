@@ -12,11 +12,8 @@
       <ImageView fx:id="albumArt" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="false">
          <image>
             <Image url="@default_cover.png" />
-         </image></ImageView>
-      <Rectangle fill="BLACK" height="62.0" width="300.0">
-         <StackPane.margin>
-            <Insets top="237.0" />
-         </StackPane.margin></Rectangle>
+         </image>
+      </ImageView>
       <HBox alignment="CENTER">
          <children>
             <VBox alignment="BOTTOM_LEFT" prefHeight="300.0" prefWidth="0.0">
