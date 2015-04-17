@@ -26,6 +26,8 @@ public class Main extends Application {
         });
         primaryStage.setResizable(false);
 
+        primaryStage.getIcons().addAll(Constants.getIcons());
+
         primaryStage.setScene(new Scene(root, 300, 300));
         primaryStage.show();
     }

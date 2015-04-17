@@ -5,6 +5,8 @@ import javafx.scene.image.Image;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -62,5 +64,22 @@ public class Constants {
             PAUSE_BUTTON = new Image(Constants.class.getResource("../pause.png").toString());
         }
         return PAUSE_BUTTON;
+    }
+
+    private static List<Image> ICONS = null;
+
+    public static List<Image> getIcons() {
+        if(ICONS == null) {
+            ICONS = new ArrayList<Image>();
+            ICONS.add(new Image(Constants.class.getResource("../16x16.png").toString()));
+            ICONS.add(new Image(Constants.class.getResource("../24x24.png").toString()));
+            ICONS.add(new Image(Constants.class.getResource("../32x32.png").toString()));
+            ICONS.add(new Image(Constants.class.getResource("../48x48.png").toString()));
+            ICONS.add(new Image(Constants.class.getResource("../64x64.png").toString()));
+            ICONS.add(new Image(Constants.class.getResource("../96x96.png").toString()));
+            ICONS.add(new Image(Constants.class.getResource("../128x128.png").toString()));
+            ICONS.add(new Image(Constants.class.getResource("../256x256.png").toString()));
+        }
+        return ICONS;
     }
 }
