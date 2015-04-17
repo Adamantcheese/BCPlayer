@@ -1,4 +1,5 @@
 import boot.Constants;
+import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -16,10 +17,11 @@ public class Main extends Application {
 
     @Override
     public void start (Stage primaryStage) throws Exception {
+        Constants.setHostServices(HostServicesFactory.getInstance(this));
+
         Parent root = FXMLLoader.load(Main.class.getResource("ui.fxml"));
         primaryStage.setTitle("Bandcamp Player");
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
             public void handle (WindowEvent event) {
                 System.exit(0);
             }

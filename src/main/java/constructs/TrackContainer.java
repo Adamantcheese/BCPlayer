@@ -23,7 +23,7 @@ public class TrackContainer {
 
     private ArrayList<String> TRACK_LIST;
 
-    private final Pattern TRACK_NAME = Pattern.compile("\"title\":\".*?\",\"id\"");
+    private final Pattern TRACK_NAME = Pattern.compile("\"title\":\".*?\"");
     private final Pattern ARTIST_NAME = Pattern.compile("artist: \".*?\",");
     private final Pattern DURATION = Pattern.compile("\"duration\":.*?,");
     private final Pattern ART_URL = Pattern.compile("artFullsizeUrl: \".*?\",");
@@ -84,7 +84,7 @@ public class TrackContainer {
         String trackName;
         if (trackNameMatcher.find()) {
             trackName = trackNameMatcher.group();
-            trackName = trackName.substring(9, trackName.length() - 6);
+            trackName = trackName.substring(9, trackName.length() - 1);
         } else {
             trackName = "N/A";
         }
@@ -133,6 +133,6 @@ public class TrackContainer {
         }
 
         //Construct and return the Track object
-        return new Track(trackName, artistName, dur, art, mp3);
+        return new Track(trackName, artistName, dur, art, mp3, URL);
     }
 }

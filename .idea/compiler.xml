@@ -25,5 +25,8 @@
         <module name="BCPlayer" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="BCPlayer" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>

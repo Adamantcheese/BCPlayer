@@ -1,6 +1,7 @@
 package boot;
 
 import constructs.PlayerContainer;
+import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -42,7 +43,15 @@ public class Controller implements Initializable {
         infoWatcher = new InfoWatcher();
     }
 
-    @Override
+    @FXML
+    private void openURL() {
+        if(playerContainer.isPlaying()) {
+            playerContainer.pauseToggle();
+            playPauseIcon.setImage(Constants.getPlayButton());
+        }
+        Constants.getHostServices().showDocument(curTrack.getPageURL());
+    }
+
     public void initialize (URL location, ResourceBundle resources) {
         playerContainer = null;
         while (playerContainer == null) {
@@ -81,7 +90,6 @@ public class Controller implements Initializable {
             while (!p.isFinished() && !skip) {
                 if (!p.isPaused()) {
                     Platform.runLater(new Runnable() {
-                        @Override
                         public void run () {
                             info.setText(curTrack.getArtist() + '\n' + curTrack.getTrackName() + '\n' + playerContainer.getCurrentTime() + '/' + curTrack.getDuration());
                         }

@@ -1,5 +1,6 @@
 package boot;
 
+import com.sun.javafx.application.HostServicesDelegate;
 import constructs.TrackContainer;
 import javafx.scene.image.Image;
 
@@ -81,5 +82,18 @@ public class Constants {
             ICONS.add(new Image(Constants.class.getResource("../256x256.png").toString()));
         }
         return ICONS;
+    }
+
+    private static HostServicesDelegate HOST_SERVICES = null;
+
+    public static HostServicesDelegate getHostServices() {
+        if(HOST_SERVICES == null) {
+            throw new IllegalAccessError();
+        }
+        return HOST_SERVICES;
+    }
+
+    public static void setHostServices(HostServicesDelegate hsd) {
+        HOST_SERVICES = hsd;
     }
 }

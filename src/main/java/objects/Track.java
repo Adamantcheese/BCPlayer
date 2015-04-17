@@ -12,13 +12,15 @@ public class Track {
     private String duration;
     private URL artURL;
     private URL trackURL;
+    private String pageURL;
 
-    public Track (String t, String a, double d, URL au, URL tu) {
+    public Track (String t, String a, double d, URL au, URL tu, String pu) {
         trackName = t;
         artist = a;
         duration = setDuration(d);
         artURL = au;
         trackURL = tu;
+        pageURL = pu;
     }
 
     public String getTrackName () {
@@ -35,6 +37,10 @@ public class Track {
 
     public URL getTrackURL () {
         return trackURL;
+    }
+
+    public String getPageURL() {
+        return pageURL;
     }
 
     public String getDuration () {

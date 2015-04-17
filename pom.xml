@@ -32,6 +32,14 @@
             <artifactId>jlayer</artifactId>
             <version>1.0.1-1</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>javafx</artifactId>
+            <version>2.2</version>
+            <scope>system</scope>
+            <systemPath>C:/Program Files/Java/jdk1.8.0_60/jre/lib/ext/jfxrt.jar</systemPath>
+        </dependency>
     </dependencies>
 
 </project>
