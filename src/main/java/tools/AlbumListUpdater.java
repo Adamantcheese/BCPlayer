@@ -74,6 +74,8 @@ public class AlbumListUpdater {
                 }
 
                 System.out.println("Expanding album: " + URL);
+                //Note that this will not get pages that are badly formatted (i.e. unclosed div elements)
+                //See C418's Minecraft Volume Alpha for an example
                 Elements trackLinks = doc.getElementsByClass("title").select("div");
 
                 for (Element track : trackLinks) {
@@ -108,13 +110,45 @@ public class AlbumListUpdater {
 
                 Elements listingGrid = doc.getElementsByClass("editable-grid");
 
-                //If the URL doesn't need expansion and redirects to a default album, we skip it here
+                //If the URL redirects to a default album/track, we deal with it here
                 if (listingGrid.size() == 0) {
-                    System.out.println("Skipping defaults-to-album/track URL: " + URL);
-                    trackList.add(URL);
+                    System.out.println("Expanding defaults-to URL: " + URL);
+                    String script = null;
+                    Elements scripts = doc.select("script");
+                    for (Element s : scripts) {
+                        String sHtml = s.html();
+                        if (sHtml.contains("tralbum_param: { name: ")) {
+                            script = sHtml;
+                        }
+                    }
+                    Matcher defaultMatcher = Pattern.compile("tralbum_param: \\{ name: \".*?\",").matcher(script);
+                    if (defaultMatcher.find()) {
+                        String type = defaultMatcher.group();
+                        type = type.substring(24, type.lastIndexOf('"'));
+                        //The default is of a type album, so treat the page like an album
+                        if (type.equals("album")) {
+                            Elements trackLinks = doc.getElementsByClass("title").select("div");
+
+                            for (Element track : trackLinks) {
+                                if (track.getElementsByAttribute("href").first() == null) {
+                                    continue;
+                                }
+                                String trackAppend = track.getElementsByAttribute("href").first().attr("href");
+                                String expandedURL = URL.substring(0, URL.length() - 1) + trackAppend;
+                                trackList.add(expandedURL);
+                                System.out.println("\tAdded track: " + expandedURL);
+                            }
+                        //The default is of type track, so treat the page as a track
+                        } else if (type.equals("track")) {
+                            System.out.println("\tAdded track: " + URL);
+                            trackList.add(URL);
+                        }
+                        //Anything that isn't an album/track is skipped automatically
+                    }
                     continue;
                 }
 
+                //We have a listing page to deal with, so we need some special parsing before album/track parsing
                 System.out.println("Expanding listing page: " + URL);
 
                 Element listing = listingGrid.first();

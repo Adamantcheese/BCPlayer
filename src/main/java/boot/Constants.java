@@ -72,14 +72,14 @@ public class Constants {
     public static List<Image> getIcons() {
         if(ICONS == null) {
             ICONS = new ArrayList<Image>();
-            ICONS.add(new Image(Constants.class.getResource("../16x16.png").toString()));
-            ICONS.add(new Image(Constants.class.getResource("../24x24.png").toString()));
-            ICONS.add(new Image(Constants.class.getResource("../32x32.png").toString()));
-            ICONS.add(new Image(Constants.class.getResource("../48x48.png").toString()));
-            ICONS.add(new Image(Constants.class.getResource("../64x64.png").toString()));
-            ICONS.add(new Image(Constants.class.getResource("../96x96.png").toString()));
-            ICONS.add(new Image(Constants.class.getResource("../128x128.png").toString()));
-            ICONS.add(new Image(Constants.class.getResource("../256x256.png").toString()));
+            ICONS.add(new Image(Constants.class.getResource("../icons/16x16.png").toString()));
+            ICONS.add(new Image(Constants.class.getResource("../icons/24x24.png").toString()));
+            ICONS.add(new Image(Constants.class.getResource("../icons/32x32.png").toString()));
+            ICONS.add(new Image(Constants.class.getResource("../icons/48x48.png").toString()));
+            ICONS.add(new Image(Constants.class.getResource("../icons/64x64.png").toString()));
+            ICONS.add(new Image(Constants.class.getResource("../icons/96x96.png").toString()));
+            ICONS.add(new Image(Constants.class.getResource("../icons/128x128.png").toString()));
+            ICONS.add(new Image(Constants.class.getResource("../icons/256x256.png").toString()));
         }
         return ICONS;
     }
