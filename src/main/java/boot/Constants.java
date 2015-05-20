@@ -46,7 +46,7 @@ public class Constants {
 
     public static URL getDefaultCover () {
         if (DEFAULT_COVER == null) {
-            DEFAULT_COVER = Constants.class.getResource("../default_cover.png");
+            DEFAULT_COVER = ClassLoader.getSystemClassLoader().getResource("default_cover.png");
         }
         return DEFAULT_COVER;
     }
@@ -55,7 +55,7 @@ public class Constants {
 
     public static Image getPlayButton () {
         if (PLAY_BUTTON == null) {
-            PLAY_BUTTON = new Image(Constants.class.getResource("../play.png").toString());
+            PLAY_BUTTON = new Image(ClassLoader.getSystemClassLoader().getResource("play.png").toString());
         }
         return PLAY_BUTTON;
     }
@@ -64,7 +64,7 @@ public class Constants {
 
     public static Image getPauseButton () {
         if (PAUSE_BUTTON == null) {
-            PAUSE_BUTTON = new Image(Constants.class.getResource("../pause.png").toString());
+            PAUSE_BUTTON = new Image(ClassLoader.getSystemClassLoader().getResource("pause.png").toString());
         }
         return PAUSE_BUTTON;
     }
@@ -74,14 +74,14 @@ public class Constants {
     public static List<Image> getIcons() {
         if(ICONS == null) {
             ICONS = new ArrayList<Image>();
-            ICONS.add(new Image(Constants.class.getResource("../icons/16x16.png").toString()));
-            ICONS.add(new Image(Constants.class.getResource("../icons/24x24.png").toString()));
-            ICONS.add(new Image(Constants.class.getResource("../icons/32x32.png").toString()));
-            ICONS.add(new Image(Constants.class.getResource("../icons/48x48.png").toString()));
-            ICONS.add(new Image(Constants.class.getResource("../icons/64x64.png").toString()));
-            ICONS.add(new Image(Constants.class.getResource("../icons/96x96.png").toString()));
-            ICONS.add(new Image(Constants.class.getResource("../icons/128x128.png").toString()));
-            ICONS.add(new Image(Constants.class.getResource("../icons/256x256.png").toString()));
+            ICONS.add(new Image(ClassLoader.getSystemClassLoader().getResource("icons/16x16.png").toString()));
+            ICONS.add(new Image(ClassLoader.getSystemClassLoader().getResource("icons/24x24.png").toString()));
+            ICONS.add(new Image(ClassLoader.getSystemClassLoader().getResource("icons/32x32.png").toString()));
+            ICONS.add(new Image(ClassLoader.getSystemClassLoader().getResource("icons/48x48.png").toString()));
+            ICONS.add(new Image(ClassLoader.getSystemClassLoader().getResource("icons/64x64.png").toString()));
+            ICONS.add(new Image(ClassLoader.getSystemClassLoader().getResource("icons/96x96.png").toString()));
+            ICONS.add(new Image(ClassLoader.getSystemClassLoader().getResource("icons/128x128.png").toString()));
+            ICONS.add(new Image(ClassLoader.getSystemClassLoader().getResource("icons/256x256.png").toString()));
         }
         return ICONS;
     }

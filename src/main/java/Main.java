@@ -36,7 +36,7 @@ public class Main extends Application {
     }
 
     public static void writeTrackFile () throws Exception {
-        Scanner tempScanner = new Scanner(new File(Main.class.getResource("tracks.nll").toURI()));
+        Scanner tempScanner = new Scanner(ClassLoader.getSystemClassLoader().getResourceAsStream("tracks.nll"));
         PrintWriter tempWriter = new PrintWriter(Constants.TRACK_FILE);
         while (tempScanner.hasNextLine()) {
             tempWriter.println(tempScanner.nextLine());
