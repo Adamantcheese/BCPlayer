@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,6 +23,7 @@ import java.util.regex.Pattern;
 public class TrackContainer {
 
     private ArrayList<String> TRACK_LIST;
+    private Random RANDOMIZER;
 
     private final Pattern TRACK_NAME = Pattern.compile("\"title\":\".*?\"");
     private final Pattern ARTIST_NAME = Pattern.compile("artist: \".*?\",");
@@ -32,6 +34,9 @@ public class TrackContainer {
     public TrackContainer () throws Exception {
         //Init the album list
         TRACK_LIST = new ArrayList<String>(15000);
+
+        //Init randomizer
+        RANDOMIZER = new Random();
 
         //Internalize the track file
         Scanner albumScanner = new Scanner(Constants.TRACK_FILE);
@@ -44,7 +49,7 @@ public class TrackContainer {
 
     public Track getRandomSong () {
         //Grab a random track URL
-        String URL = TRACK_LIST.get(Constants.RANDOMIZER.nextInt(TRACK_LIST.size()));
+        String URL = TRACK_LIST.get(RANDOMIZER.nextInt(TRACK_LIST.size()));
 
         //Get the track HTML document
         Document doc = null;

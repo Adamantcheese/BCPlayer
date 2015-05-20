@@ -1,7 +1,6 @@
 package boot;
 
 import constructs.PlayerContainer;
-import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,6 +20,9 @@ public class Controller implements Initializable {
     private Track curTrack;
     private PlayerContainer playerContainer;
     private InfoWatcher infoWatcher;
+
+    private Track prevTrack;
+    private Track nextTrack;
 
     @FXML
     private void playPause () {

@@ -10,6 +10,7 @@ import javafx.stage.WindowEvent;
 import org.apache.commons.io.FilenameUtils;
 import tools.AlbumListUpdater;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
@@ -35,7 +36,7 @@ public class Main extends Application {
     }
 
     public static void writeTrackFile () throws Exception {
-        Scanner tempScanner = new Scanner(Constants.getInternalTrackFile());
+        Scanner tempScanner = new Scanner(new File(Main.class.getResource("tracks.nll").toURI()));
         PrintWriter tempWriter = new PrintWriter(Constants.TRACK_FILE);
         while (tempScanner.hasNextLine()) {
             tempWriter.println(tempScanner.nextLine());
@@ -45,8 +46,11 @@ public class Main extends Application {
     }
 
     public static void main (String[] args) throws Exception {
+        boolean forceUpdate = false;
         //If the user specified a file, make sure it has the right extension
-        if (args.length == 1 && FilenameUtils.getExtension(args[0]) != "nll") {
+        if(args.length == 1 && args[0].equals("--forcelist")) {
+            forceUpdate = true;
+        } else if (args.length == 1 && FilenameUtils.getExtension(args[0]) != "nll") {
             System.err.println("File should have extension nll, with one URL per line.");
             return;
         }
@@ -59,21 +63,20 @@ public class Main extends Application {
         //Copy the internal track file to the temp directory, or expand the one specified to the temp directory
         if (!Constants.TRACK_FILE.exists()) {
             if (args.length == 1) {
-                System.out.println("Warning: The operation may take upwards of 30 minutes to finish, do you want to continue? (Y/N)");
+                System.out.println("Warning: The operation may take a while to finish, do you want to continue? (Y/N)");
                 Scanner keyboard = new Scanner(System.in);
                 String ans = "";
                 while (!(ans.equals("y") || ans.equals("n"))) {
                     ans = keyboard.nextLine().toLowerCase();
                 }
-                if (ans.equals("n")) {
-                    writeTrackFile();
-                } else {
+                if (ans.equals("y")) {
                     AlbumListUpdater.update(args[0]);
                 }
-            } else {
-                writeTrackFile();
             }
+        } else if (forceUpdate) {
+            Constants.TRACK_FILE.delete();
         }
+        writeTrackFile();
 
         //Launch the application
         launch(args);

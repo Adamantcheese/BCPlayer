@@ -47,11 +47,11 @@ public class Track {
         return duration;
     }
 
-    public String setDuration (double d) {
+    private String setDuration (double d) {
         String dur = "";
         int hours = (int) (d / 60 / 60);
         int minutes = (int) (d / 60) - hours * 60;
-        int seconds = (int) (d) - minutes * 60;
+        int seconds = (int) (d) - minutes * 60 - hours * 3600;
         if (hours > 0) {
             dur += String.format("%02d:", hours);
         }

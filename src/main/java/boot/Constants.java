@@ -8,7 +8,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Jacob on 3/22/2015.
@@ -20,16 +19,6 @@ public class Constants {
 
     public static final File BASE_DIR = new File(BASE_TEMP_DIR);
     public static final File TRACK_FILE = new File(TRACK_FILE_DIR);
-    private static File INTERNAL_TRACK_FILE = null;
-
-    public static File getInternalTrackFile () throws Exception {
-        if (INTERNAL_TRACK_FILE == null) {
-            INTERNAL_TRACK_FILE = new File(Constants.class.getResource("../tracks.nll").toURI());
-        }
-        return INTERNAL_TRACK_FILE;
-    }
-
-    public static final Random RANDOMIZER = new Random();
 
     private static TrackContainer TRACK_HELPER = null;
 
@@ -38,6 +27,19 @@ public class Constants {
             TRACK_HELPER = new TrackContainer();
         }
         return TRACK_HELPER;
+    }
+
+    private static HostServicesDelegate HOST_SERVICES = null;
+
+    public static HostServicesDelegate getHostServices() {
+        if(HOST_SERVICES == null) {
+            throw new IllegalAccessError();
+        }
+        return HOST_SERVICES;
+    }
+
+    public static void setHostServices(HostServicesDelegate hsd) {
+        HOST_SERVICES = hsd;
     }
 
     private static URL DEFAULT_COVER = null;
@@ -82,18 +84,5 @@ public class Constants {
             ICONS.add(new Image(Constants.class.getResource("../icons/256x256.png").toString()));
         }
         return ICONS;
-    }
-
-    private static HostServicesDelegate HOST_SERVICES = null;
-
-    public static HostServicesDelegate getHostServices() {
-        if(HOST_SERVICES == null) {
-            throw new IllegalAccessError();
-        }
-        return HOST_SERVICES;
-    }
-
-    public static void setHostServices(HostServicesDelegate hsd) {
-        HOST_SERVICES = hsd;
     }
 }
