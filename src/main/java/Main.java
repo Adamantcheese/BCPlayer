@@ -35,16 +35,6 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    public static void writeTrackFile () throws Exception {
-        Scanner tempScanner = new Scanner(ClassLoader.getSystemClassLoader().getResourceAsStream("tracks.nll"));
-        PrintWriter tempWriter = new PrintWriter(Constants.TRACK_FILE);
-        while (tempScanner.hasNextLine()) {
-            tempWriter.println(tempScanner.nextLine());
-        }
-        tempScanner.close();
-        tempWriter.close();
-    }
-
     public static void main (String[] args) throws Exception {
         boolean forceUpdate = false;
         //If the user specified a file, make sure it has the right extension
@@ -76,7 +66,18 @@ public class Main extends Application {
         } else if (forceUpdate) {
             Constants.TRACK_FILE.delete();
         }
-        writeTrackFile();
+
+        Scanner tempScanner = new Scanner(ClassLoader.getSystemClassLoader().getResourceAsStream("tracks.nll"));
+        PrintWriter tempWriter = new PrintWriter(Constants.TRACK_FILE);
+        if(Constants.TRACK_FILE.exists()) {
+            //Do nothing if the file already exists
+        } else {
+            while (tempScanner.hasNextLine()) {
+                tempWriter.println(tempScanner.nextLine());
+            }
+            tempScanner.close();
+            tempWriter.close();
+        }
 
         //Launch the application
         launch(args);
