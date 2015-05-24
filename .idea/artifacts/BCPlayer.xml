@@ -1,0 +1,19 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="BCPlayer">
+    <output-path>$PROJECT_DIR$/out/artifacts/BCPlayer</output-path>
+    <root id="root">
+      <element id="archive" name="BCPlayer.jar">
+        <element id="module-output" name="BCPlayer" />
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+        </element>
+      </element>
+      <element id="directory" name="lib">
+        <element id="library" level="project" name="Maven: com.googlecode.soundlibs:jlayer:1.0.1-1" />
+        <element id="library" level="project" name="Maven: commons-io:commons-io:2.4" />
+        <element id="library" level="project" name="Maven: org.jsoup:jsoup:1.8.1" />
+        <element id="library" level="project" name="Maven: org:jaudiotagger:2.0.3" />
+      </element>
+    </root>
+  </artifact>
+</component>

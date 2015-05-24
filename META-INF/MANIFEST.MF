@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 Class-Path: lib/jsoup-1.8.1.jar lib/jlayer-1.0.1-1.jar lib/commons-io-
- 2.4.jar
+ 2.4.jar lib/jaudiotagger-2.0.3.jar
 Main-Class: Main
 

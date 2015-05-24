@@ -1,5 +1,6 @@
 package boot;
 
+import constructs.DownloadManager;
 import constructs.PlayerContainer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -7,9 +8,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import objects.Downloader;
 import objects.Track;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -21,8 +26,10 @@ public class Controller implements Initializable {
     private PlayerContainer playerContainer;
     private InfoWatcher infoWatcher;
 
-    private Track prevTrack;
-    private Track nextTrack;
+    private ArrayList<Track> history;
+    private boolean repeat;
+
+    private DownloadManager downloadManager;
 
     @FXML
     private void playPause () {
@@ -42,7 +49,12 @@ public class Controller implements Initializable {
         } while (playerContainer == null);
         albumArt.setImage(new Image(curTrack.getArtURL().toString()));
         playerContainer.playSong();
+        playPauseIcon.setImage(Constants.getPauseButton());
         infoWatcher = new InfoWatcher();
+    }
+
+    private void playPrev() {
+
     }
 
     @FXML
@@ -54,7 +66,54 @@ public class Controller implements Initializable {
         Constants.getHostServices().showDocument(curTrack.getPageURL());
     }
 
+    private void downloadCurSong() {
+        downloadManager.download(curTrack);
+    }
+
+    private void toggleRepeat() {
+        if(repeat) {
+            repeat = false;
+        } else {
+            repeat = true;
+        }
+    }
+
+    @FXML
+    private void handleKeyInput(KeyEvent event) {
+        switch(event.getCode()) {
+            case KP_LEFT:
+            case LEFT:
+                playPrev();
+                break;
+            case KP_RIGHT:
+            case RIGHT:
+                playNext();
+                break;
+            case SPACE:
+                playPause();
+                break;
+            case KP_UP:
+            case UP:
+                openURL();
+                break;
+            case KP_DOWN:
+            case DOWN:
+                downloadCurSong();
+                break;
+            case CAPS:
+            case CONTROL:
+                toggleRepeat();
+                break;
+            default:
+                break;
+        }
+    }
+
     public void initialize (URL location, ResourceBundle resources) {
+        history = new ArrayList<Track>(50);
+        repeat = false;
+        downloadManager = new DownloadManager();
+        downloadManager.start();
         playerContainer = null;
         while (playerContainer == null) {
             setNextSong();
@@ -67,11 +126,14 @@ public class Controller implements Initializable {
     private void setNextSong () {
         do {
             try {
-                curTrack = Constants.getTrackHelper().getRandomSong();
+                if(!repeat) {
+                    curTrack = Constants.getTrackHelper().getRandomSong();
+                }
             } catch (Exception e) {
                 curTrack = null;
             }
         } while (curTrack == null || curTrack.getTrackURL() == null);
+
         try {
             playerContainer = new PlayerContainer(curTrack);
         } catch (Exception e) {
