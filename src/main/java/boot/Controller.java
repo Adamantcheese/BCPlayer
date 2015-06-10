@@ -8,7 +8,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.shape.Rectangle;
 import objects.Track;
 
 import java.net.URL;
@@ -20,7 +19,6 @@ public class Controller implements Initializable {
     public ImageView playPauseIcon;
     public ImageView albumArt;
     public ImageView repeatButton;
-    public ImageView downloadButton;
 
     private Track curTrack;
     private static PlayerContainer playerContainer;
@@ -49,11 +47,6 @@ public class Controller implements Initializable {
         playerContainer.playSong();
         playPauseIcon.setImage(Constants.getPauseButton());
         infoWatcher = new InfoWatcher();
-
-        if(!repeat) {
-            downloadButton.setDisable(false);
-            downloadButton.setVisible(true);
-        }
     }
 
     @FXML
@@ -66,11 +59,6 @@ public class Controller implements Initializable {
         playerContainer.playSong();
         playPauseIcon.setImage(Constants.getPauseButton());
         infoWatcher = new InfoWatcher();*/
-
-        if(!repeat) {
-            downloadButton.setDisable(false);
-            downloadButton.setVisible(true);
-        }
     }
 
     @FXML
@@ -85,8 +73,6 @@ public class Controller implements Initializable {
     @FXML
     private void downloadCurSong() {
         Constants.getDownloadManager().download(curTrack);
-        downloadButton.setDisable(true);
-        downloadButton.setVisible(false);
     }
 
     @FXML
@@ -127,7 +113,7 @@ public class Controller implements Initializable {
 
     public void initialize (URL location, ResourceBundle resources) {
         history = new LinkedList<Track>();
-        for(int i = 0; i < 50;) {
+        for(int i = 0; i < 50; ) {
             try {
                 history.add(Constants.getTrackHelper().getRandomSong());
                 i++;

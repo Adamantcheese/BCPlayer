@@ -114,4 +114,6 @@ public class Constants {
         }
         return ICONS;
     }
+
+    public static int HISTORY_LIMIT = 150;
 }

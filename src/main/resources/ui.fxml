@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Rectangle?>
+
 <StackPane fx:id="application" maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="300.0"
            prefHeight="300.0" prefWidth="300.0"
            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="boot.Controller">
@@ -52,7 +53,7 @@
                 <Insets bottom="30.0" right="10.0"/>
             </StackPane.margin>
         </ImageView>
-        <ImageView fx:id="downloadButton" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true"
+        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true"
                    onMouseClicked="#downloadCurSong" StackPane.alignment="BOTTOM_RIGHT">
             <image>
                 <Image url="@download.png"/>
