@@ -48,4 +48,8 @@ public class DownloadManager extends Thread {
             }
         }
     }
+
+    public boolean allDone() {
+        return activeDownloads.isEmpty();
+    }
 }

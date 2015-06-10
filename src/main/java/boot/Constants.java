@@ -1,6 +1,7 @@
 package boot;
 
 import com.sun.javafx.application.HostServicesDelegate;
+import constructs.DownloadManager;
 import constructs.TrackContainer;
 import javafx.scene.image.Image;
 
@@ -27,6 +28,16 @@ public class Constants {
             TRACK_HELPER = new TrackContainer();
         }
         return TRACK_HELPER;
+    }
+
+    private static DownloadManager DOWNLOAD_MANAGER = null;
+
+    public static DownloadManager getDownloadManager() {
+        if(DOWNLOAD_MANAGER == null) {
+            DOWNLOAD_MANAGER = new DownloadManager();
+            DOWNLOAD_MANAGER.start();
+        }
+        return DOWNLOAD_MANAGER;
     }
 
     private static HostServicesDelegate HOST_SERVICES = null;
@@ -67,6 +78,24 @@ public class Constants {
             PAUSE_BUTTON = new Image(ClassLoader.getSystemClassLoader().getResource("pause.png").toString());
         }
         return PAUSE_BUTTON;
+    }
+
+    private static Image REPEAT_ON_BUTTON = null;
+
+    public static Image getRepeatOnButton() {
+        if (REPEAT_ON_BUTTON == null) {
+            REPEAT_ON_BUTTON = new Image(ClassLoader.getSystemClassLoader().getResource("repeat_on.png").toString());
+        }
+        return REPEAT_ON_BUTTON;
+    }
+
+    private static Image REPEAT_OFF_BUTTON = null;
+
+    public static Image getRepeatOffButton() {
+        if (REPEAT_OFF_BUTTON == null) {
+            REPEAT_OFF_BUTTON = new Image(ClassLoader.getSystemClassLoader().getResource("repeat_off.png").toString());
+        }
+        return REPEAT_OFF_BUTTON;
     }
 
     private static List<Image> ICONS = null;

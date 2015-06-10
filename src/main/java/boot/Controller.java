@@ -1,6 +1,5 @@
 package boot;
 
-import constructs.DownloadManager;
 import constructs.PlayerContainer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -8,28 +7,27 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import objects.Downloader;
+import javafx.scene.shape.Rectangle;
 import objects.Track;
 
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
     public Label info;
     public ImageView playPauseIcon;
     public ImageView albumArt;
+    public ImageView repeatButton;
+    public ImageView downloadButton;
 
     private Track curTrack;
-    private PlayerContainer playerContainer;
-    private InfoWatcher infoWatcher;
+    private static PlayerContainer playerContainer;
+    private static InfoWatcher infoWatcher;
 
-    private ArrayList<Track> history;
+    private LinkedList<Track> history;
     private boolean repeat;
-
-    private DownloadManager downloadManager;
 
     @FXML
     private void playPause () {
@@ -51,10 +49,28 @@ public class Controller implements Initializable {
         playerContainer.playSong();
         playPauseIcon.setImage(Constants.getPauseButton());
         infoWatcher = new InfoWatcher();
+
+        if(!repeat) {
+            downloadButton.setDisable(false);
+            downloadButton.setVisible(true);
+        }
     }
 
+    @FXML
     private void playPrev() {
+        /*infoWatcher.skip();
+        do {
+            setNextSong();
+        } while (playerContainer == null);
+        albumArt.setImage(new Image(curTrack.getArtURL().toString()));
+        playerContainer.playSong();
+        playPauseIcon.setImage(Constants.getPauseButton());
+        infoWatcher = new InfoWatcher();*/
 
+        if(!repeat) {
+            downloadButton.setDisable(false);
+            downloadButton.setVisible(true);
+        }
     }
 
     @FXML
@@ -66,41 +82,41 @@ public class Controller implements Initializable {
         Constants.getHostServices().showDocument(curTrack.getPageURL());
     }
 
+    @FXML
     private void downloadCurSong() {
-        downloadManager.download(curTrack);
-    }
-
-    private void toggleRepeat() {
-        if(repeat) {
-            repeat = false;
-        } else {
-            repeat = true;
-        }
+        Constants.getDownloadManager().download(curTrack);
+        downloadButton.setDisable(true);
+        downloadButton.setVisible(false);
     }
 
     @FXML
-    private void handleKeyInput(KeyEvent event) {
+    private void toggleRepeat() {
+        if(repeat) {
+            repeat = false;
+            repeatButton.setImage(Constants.getRepeatOffButton());
+        } else {
+            repeat = true;
+            repeatButton.setImage(Constants.getRepeatOnButton());
+        }
+    }
+
+    private void handleKeyInput (KeyEvent event) {
         switch(event.getCode()) {
-            case KP_LEFT:
             case LEFT:
                 playPrev();
                 break;
-            case KP_RIGHT:
             case RIGHT:
                 playNext();
                 break;
             case SPACE:
                 playPause();
                 break;
-            case KP_UP:
             case UP:
                 openURL();
                 break;
-            case KP_DOWN:
             case DOWN:
                 downloadCurSong();
                 break;
-            case CAPS:
             case CONTROL:
                 toggleRepeat();
                 break;
@@ -110,10 +126,16 @@ public class Controller implements Initializable {
     }
 
     public void initialize (URL location, ResourceBundle resources) {
-        history = new ArrayList<Track>(50);
+        history = new LinkedList<Track>();
+        for(int i = 0; i < 50;) {
+            try {
+                history.add(Constants.getTrackHelper().getRandomSong());
+                i++;
+            } catch (Exception e) {
+
+            }
+        }
         repeat = false;
-        downloadManager = new DownloadManager();
-        downloadManager.start();
         playerContainer = null;
         while (playerContainer == null) {
             setNextSong();
@@ -139,6 +161,10 @@ public class Controller implements Initializable {
         } catch (Exception e) {
             playerContainer = null;
         }
+    }
+
+    public static void killCurSong() {
+        infoWatcher.skip();
     }
 
     private class InfoWatcher extends Thread {

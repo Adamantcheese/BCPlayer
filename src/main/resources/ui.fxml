@@ -1,50 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.shape.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-
-<StackPane maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="300.0" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="boot.Controller" onKeyPressed="#handleKeyInput">
-   <children>
-      <ImageView fx:id="albumArt" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="false" onMouseClicked="#openURL">
-         <image>
-            <Image url="@default_cover.png" />
-         </image>
-      </ImageView>
-      <Rectangle fill="WHITE" opacity="0.85" height="65.0" width="300.0" StackPane.alignment="BOTTOM_CENTER" />
-      <Button ellipsisString="" mnemonicParsing="false" onAction="#playPause" style="-fx-focus-color: transparent; -fx-background-color: transparent;" StackPane.alignment="BOTTOM_LEFT">
-         <graphic>
-            <ImageView fx:id="playPauseIcon" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@pause.png" />
-               </image>
-            </ImageView>
-         </graphic>
-         <StackPane.margin>
-            <Insets bottom="10.0" left="10.0" />
-         </StackPane.margin>
-      </Button>
-      <Button ellipsisString="" mnemonicParsing="false" onAction="#playNext" style="-fx-focus-color: transparent; -fx-background-color: transparent;" StackPane.alignment="BOTTOM_RIGHT">
-         <graphic>
-            <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@next.png" />
-               </image>
-            </ImageView>
-         </graphic>
-         <StackPane.margin>
-            <Insets bottom="10.0" right="10.0" />
-         </StackPane.margin>
-      </Button>
-      <HBox alignment="CENTER" StackPane.alignment="CENTER">
-         <children>
-            <Label fx:id="info" ellipsisString="..." text="Arist Name&#10;Track Name&#10;00:00/00:00" textAlignment="CENTER" textFill="black" HBox.hgrow="NEVER" />
-         </children>
-         <StackPane.margin>
-            <Insets bottom="5.0" left="65.0" right="65.0" top="245.0" />
-         </StackPane.margin>
-      </HBox>
-   </children>
+<?import javafx.scene.shape.Rectangle?>
+<StackPane fx:id="application" maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="300.0"
+           prefHeight="300.0" prefWidth="300.0"
+           xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="boot.Controller">
+    <children>
+        <ImageView fx:id="albumArt" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="false"
+                   onMouseClicked="#openURL">
+            <image>
+                <Image url="@default_cover.png"/>
+            </image>
+        </ImageView>
+        <Rectangle fill="WHITE" opacity="0.85" height="70.0" width="300.0" StackPane.alignment="BOTTOM_CENTER"/>
+        <ImageView fx:id="playPauseIcon" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true"
+                   onMouseClicked="#playPause" StackPane.alignment="BOTTOM_RIGHT">
+            <image>
+                <Image url="@pause.png"/>
+            </image>
+            <StackPane.margin>
+                <Insets bottom="17.5" right="80.0"/>
+            </StackPane.margin>
+        </ImageView>
+        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true"
+                   onMouseClicked="#playNext" StackPane.alignment="BOTTOM_RIGHT">
+            <image>
+                <Image url="@next.png"/>
+            </image>
+            <StackPane.margin>
+                <Insets bottom="5.0" right="10.0"/>
+            </StackPane.margin>
+        </ImageView>
+        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true"
+                   onMouseClicked="#playPrev" StackPane.alignment="BOTTOM_RIGHT" scaleX="-1">
+            <image>
+                <Image url="@next.png"/>
+            </image>
+            <StackPane.margin>
+                <Insets bottom="5.0" right="45.0"/>
+            </StackPane.margin>
+        </ImageView>
+        <ImageView fx:id="repeatButton" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true"
+                   onMouseClicked="#toggleRepeat" StackPane.alignment="BOTTOM_RIGHT">
+            <image>
+                <Image url="@repeat_off.png"/>
+            </image>
+            <StackPane.margin>
+                <Insets bottom="30.0" right="10.0"/>
+            </StackPane.margin>
+        </ImageView>
+        <ImageView fx:id="downloadButton" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true"
+                   onMouseClicked="#downloadCurSong" StackPane.alignment="BOTTOM_RIGHT">
+            <image>
+                <Image url="@download.png"/>
+            </image>
+            <StackPane.margin>
+                <Insets bottom="30.0" right="45.0"/>
+            </StackPane.margin>
+        </ImageView>
+        <Label fx:id="info" ellipsisString="..." text="Arist Name&#10;Track Name&#10;00:00/00:00"
+               textAlignment="CENTER" textFill="black" HBox.hgrow="NEVER"
+               StackPane.alignment="BOTTOM_CENTER">
+            <StackPane.margin>
+                <Insets bottom="10.0" left="10.0" right="125.0"/>
+            </StackPane.margin>
+        </Label>
+    </children>
 </StackPane>

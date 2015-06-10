@@ -1,4 +1,5 @@
 import boot.Constants;
+import boot.Controller;
 import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -17,13 +18,22 @@ import java.util.Scanner;
 public class Main extends Application {
 
     @Override
-    public void start (Stage primaryStage) throws Exception {
+    public void start (final Stage primaryStage) throws Exception {
         Constants.setHostServices(HostServicesFactory.getInstance(this));
 
         Parent root = FXMLLoader.load(Main.class.getResource("ui.fxml"));
         primaryStage.setTitle("Bandcamp Player");
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle (WindowEvent event) {
+                primaryStage.close();
+                Controller.killCurSong();
+                while(!Constants.getDownloadManager().allDone()) {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (Exception e) {
+
+                    }
+                }
                 System.exit(0);
             }
         });
