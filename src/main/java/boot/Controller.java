@@ -25,6 +25,7 @@ public class Controller implements Initializable {
     private static InfoWatcher infoWatcher;
 
     private LinkedList<Track> history;
+    private int historyPointer;
     private boolean repeat;
 
     @FXML
@@ -41,7 +42,7 @@ public class Controller implements Initializable {
     private void playNext () {
         infoWatcher.skip();
         do {
-            setNextSong();
+            setNextSong(true);
         } while (playerContainer == null);
         albumArt.setImage(new Image(curTrack.getArtURL().toString()));
         playerContainer.playSong();
@@ -51,14 +52,14 @@ public class Controller implements Initializable {
 
     @FXML
     private void playPrev() {
-        /*infoWatcher.skip();
+        infoWatcher.skip();
         do {
-            setNextSong();
+            setNextSong(false);
         } while (playerContainer == null);
         albumArt.setImage(new Image(curTrack.getArtURL().toString()));
         playerContainer.playSong();
         playPauseIcon.setImage(Constants.getPauseButton());
-        infoWatcher = new InfoWatcher();*/
+        infoWatcher = new InfoWatcher();
     }
 
     @FXML
@@ -86,6 +87,7 @@ public class Controller implements Initializable {
         }
     }
 
+    @FXML
     private void handleKeyInput (KeyEvent event) {
         switch(event.getCode()) {
             case LEFT:
@@ -113,7 +115,7 @@ public class Controller implements Initializable {
 
     public void initialize (URL location, ResourceBundle resources) {
         history = new LinkedList<Track>();
-        for(int i = 0; i < 50; ) {
+        for(int i = 0; i < Constants.HISTORY_LIMIT; ) {
             try {
                 history.add(Constants.getTrackHelper().getRandomSong());
                 i++;
@@ -121,21 +123,39 @@ public class Controller implements Initializable {
 
             }
         }
+        historyPointer = Constants.HISTORY_LIMIT/2-1;
         repeat = false;
         playerContainer = null;
         while (playerContainer == null) {
-            setNextSong();
+            setNextSong(true);
         }
         albumArt.setImage(new Image(curTrack.getArtURL().toString()));
         playerContainer.playSong();
         infoWatcher = new InfoWatcher();
     }
 
-    private void setNextSong () {
+    private void setNextSong (boolean next) {
         do {
             try {
                 if(!repeat) {
-                    curTrack = Constants.getTrackHelper().getRandomSong();
+                    if(next) {
+                        historyPointer++;
+                    } else {
+                        historyPointer--;
+                    }
+                    if(historyPointer >= Constants.HISTORY_LIMIT || historyPointer < 0) {
+                        historyPointer = Constants.HISTORY_LIMIT/2;
+                        history.clear();
+                        for(int i = 0; i < Constants.HISTORY_LIMIT; ) {
+                            try {
+                                history.add(Constants.getTrackHelper().getRandomSong());
+                                i++;
+                            } catch (Exception e) {
+
+                            }
+                        }
+                    }
+                    curTrack = history.get(historyPointer);
                 }
             } catch (Exception e) {
                 curTrack = null;

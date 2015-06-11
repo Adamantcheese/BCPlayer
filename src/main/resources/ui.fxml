@@ -50,7 +50,7 @@
                 <Image url="@repeat_off.png"/>
             </image>
             <StackPane.margin>
-                <Insets bottom="30.0" right="10.0"/>
+                <Insets bottom="32.0" right="10.0"/>
             </StackPane.margin>
         </ImageView>
         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true"
@@ -59,7 +59,7 @@
                 <Image url="@download.png"/>
             </image>
             <StackPane.margin>
-                <Insets bottom="30.0" right="45.0"/>
+                <Insets bottom="32.0" right="45.0"/>
             </StackPane.margin>
         </ImageView>
         <Label fx:id="info" ellipsisString="..." text="Arist Name&#10;Track Name&#10;00:00/00:00"
