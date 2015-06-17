@@ -62,6 +62,7 @@ public class Main extends Application {
 
         //Copy the internal track file to the temp directory, or expand the one specified to the temp directory
         if (!Constants.TRACK_FILE.exists()) {
+            writeInternalFile();
             if (args.length == 1) {
                 System.out.println("Warning: The operation may take a while to finish, do you want to continue? (Y/N)");
                 Scanner keyboard = new Scanner(System.in);
@@ -71,8 +72,6 @@ public class Main extends Application {
                 }
                 if (ans.equals("y")) {
                     AlbumListUpdater.update(args[0]);
-                } else {
-                    writeInternalFile();
                 }
 
             }
