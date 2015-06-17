@@ -50,7 +50,7 @@ public class Main extends Application {
         //If the user specified a file, make sure it has the right extension
         if(args.length == 1 && args[0].equals("--forcelist")) {
             forceUpdate = true;
-        } else if (args.length == 1 && FilenameUtils.getExtension(args[0]) != "nll") {
+        } else if (args.length == 1 && !FilenameUtils.getExtension(args[0]).equals("nll")) {
             System.err.println("File should have extension nll, with one URL per line.");
             return;
         }
@@ -63,21 +63,23 @@ public class Main extends Application {
         //Copy the internal track file to the temp directory, or expand the one specified to the temp directory
         if (!Constants.TRACK_FILE.exists()) {
             writeInternalFile();
-            if (args.length == 1) {
-                System.out.println("Warning: The operation may take a while to finish, do you want to continue? (Y/N)");
-                Scanner keyboard = new Scanner(System.in);
-                String ans = "";
-                while (!(ans.equals("y") || ans.equals("n"))) {
-                    ans = keyboard.nextLine().toLowerCase();
-                }
-                if (ans.equals("y")) {
-                    AlbumListUpdater.update(args[0]);
-                }
-
-            }
         } else if (forceUpdate) {
             Constants.TRACK_FILE.delete();
             writeInternalFile();
+        }
+
+        //Update the track file with the one specified if so
+        if (args.length == 1 && !forceUpdate) {
+            System.out.println("Warning: The operation may take a while to finish, do you want to continue? (Y/N)");
+            Scanner keyboard = new Scanner(System.in);
+            String ans = "";
+            while (!(ans.equals("y") || ans.equals("n"))) {
+                ans = keyboard.nextLine().toLowerCase();
+            }
+            if (ans.equals("y")) {
+                Constants.TRACK_FILE.delete();
+                AlbumListUpdater.update(args[0]);
+            }
         }
 
         //Launch the application
