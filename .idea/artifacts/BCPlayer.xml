@@ -1,6 +1,16 @@
 <component name="ArtifactManager">
   <artifact type="javafx" name="BCPlayer">
     <output-path>$PROJECT_DIR$/out/artifacts/BCPlayer</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="Main" />
+        <option name="description" value="" />
+        <option name="htmlParamFile" value="" />
+        <option name="paramFile" value="" />
+        <option name="title" value="" />
+        <option name="vendor" value="" />
+      </options>
+    </properties>
     <root id="root">
       <element id="archive" name="BCPlayer.jar">
         <element id="module-output" name="BCPlayer" />
@@ -13,6 +23,7 @@
         <element id="library" level="project" name="Maven: commons-io:commons-io:2.4" />
         <element id="library" level="project" name="Maven: org.jsoup:jsoup:1.8.1" />
         <element id="library" level="project" name="Maven: org:jaudiotagger:2.0.3" />
+        <element id="library" level="project" name="Maven: com.mpatric:mp3agic:0.8.3" />
       </element>
     </root>
   </artifact>

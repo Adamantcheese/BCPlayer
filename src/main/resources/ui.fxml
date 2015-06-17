@@ -6,8 +6,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Rectangle?>
 
-<StackPane fx:id="application" maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="300.0"
-           prefHeight="300.0" prefWidth="300.0"
+<StackPane maxHeight="300.0" maxWidth="300.0" minHeight="300.0" minWidth="300.0"
+           prefHeight="300.0" prefWidth="300.0" onKeyPressed="#handleKeyInput"
            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="boot.Controller">
     <children>
         <ImageView fx:id="albumArt" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="false"

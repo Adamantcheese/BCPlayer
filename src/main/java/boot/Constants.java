@@ -115,5 +115,5 @@ public class Constants {
         return ICONS;
     }
 
-    public static int HISTORY_LIMIT = 150;
+    public static int HISTORY_LIMIT = 50;
 }

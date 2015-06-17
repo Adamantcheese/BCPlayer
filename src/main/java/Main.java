@@ -11,7 +11,7 @@ import javafx.stage.WindowEvent;
 import org.apache.commons.io.FilenameUtils;
 import tools.AlbumListUpdater;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
@@ -21,7 +21,8 @@ public class Main extends Application {
     public void start (final Stage primaryStage) throws Exception {
         Constants.setHostServices(HostServicesFactory.getInstance(this));
 
-        Parent root = FXMLLoader.load(Main.class.getResource("ui.fxml"));
+        final Parent root = FXMLLoader.load(Main.class.getResource("ui.fxml"));
+
         primaryStage.setTitle("Bandcamp Player");
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle (WindowEvent event) {
@@ -38,7 +39,6 @@ public class Main extends Application {
             }
         });
         primaryStage.setResizable(false);
-
         primaryStage.getIcons().addAll(Constants.getIcons());
 
         primaryStage.setScene(new Scene(root, 300, 300));
@@ -71,22 +71,33 @@ public class Main extends Application {
                 }
                 if (ans.equals("y")) {
                     AlbumListUpdater.update(args[0]);
+                } else {
+                    writeInternalFile();
                 }
+
             }
         } else if (forceUpdate) {
             Constants.TRACK_FILE.delete();
+            writeInternalFile();
         }
 
+        //Launch the application
+        launch(args);
+    }
+
+    public static void writeInternalFile() {
         //Write the track file
         Scanner tempScanner = new Scanner(ClassLoader.getSystemClassLoader().getResourceAsStream("tracks.nll"));
-        PrintWriter tempWriter = new PrintWriter(Constants.TRACK_FILE);
+        PrintWriter tempWriter = null;
+        try {
+            tempWriter = new PrintWriter(Constants.TRACK_FILE);
+        } catch (FileNotFoundException e) {
+            return;
+        }
         while (tempScanner.hasNextLine()) {
             tempWriter.println(tempScanner.nextLine());
         }
         tempScanner.close();
         tempWriter.close();
-
-        //Launch the application
-        launch(args);
     }
 }
